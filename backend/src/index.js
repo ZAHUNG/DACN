@@ -1,23 +1,28 @@
 const express = require("express");
 const dotenv = require("dotenv");
-const mongoose = require("mongoose");
+const connectDB = require("./config/db");
+const routes = require("./routes");
+const cors = require("cors");
+const morgan = require("morgan");
+const helmet = require("helmet");
+
 dotenv.config();
-
 const app = express();
-const port = process.env.PORT || 3001
 
-app.get('/', (req,res) => {
-     res.send('Hello anh em xoiws')
-})
+// Middleware
+app.use(helmet());
+app.use(cors());
+app.use(morgan("dev"));
+app.use(express.json());
 
-mongoose.connect(`mongodb+srv://tgh:${process.env.MONGO_DB}@cluster0.lf2nfzb.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`)
-.then(() =>{
-    console.log('Connected to MongoDB');
-})
-.catch((err) =>{
-    console.log(err)
-})
+// Kết nối DB
+connectDB();
 
-app.listen(port, () =>{
-    console.log('Server is running on port:', + port);
-})
+// Routes
+app.use("/api", routes); // Mọi route sẽ bắt đầu với /api
+
+// Lắng nghe server
+const port = process.env.PORT || 3001;
+app.listen(port, () => {
+  console.log(`🚀 Server is running on port: ${port}`);
+});
