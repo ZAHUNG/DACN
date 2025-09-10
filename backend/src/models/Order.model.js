@@ -1,75 +1,90 @@
 const mongoose = require("mongoose");
+const { Schema } = mongoose;
 
-const orderItemSchema = new mongoose.Schema({
-  productId: { type: mongoose.Schema.Types.ObjectId, ref: "Product", index: true },
-  name: { type: String, required: true, trim: true },    // snapshot
-  image: { type: String },                                // snapshot
-  qty: { type: Number, required: true, min: 1 },
-  price: { type: Number, required: true, min: 0 },       // snapshot (giá áp dụng)
-  salePrice: { type: Number, min: 0 },                    // snapshot
-}, { _id: false });
-
-const addressSnapshotSchema = new mongoose.Schema({
-  fullName: String,
-  phone: String,
-  line1: String,
-  line2: String,
-  ward: String,
-  district: String,
-  province: String,
-  country: { type: String, default: "VN" },
-  postalCode: String,
-}, { _id: false });
-
-const shippingSchema = new mongoose.Schema({
-  method: { type: String, trim: true },
-  carrier: { type: String, trim: true },
-  trackingNumber: { type: String, trim: true, index: true },
-  status: { type: String, enum: ["created", "in_transit", "out_for_delivery", "delivered", "failed"], default: "created" },
-  history: [{
-    status: String,
-    note: String,
-    at: { type: Date, default: Date.now }
-  }]
-}, { _id: false });
-
-const paymentSchema = new mongoose.Schema({
-  method: { type: String, trim: true }, // vnpay|momo|cod|stripe|paypal...
-  provider: { type: String, trim: true },
-  status: { type: String, enum: ["init", "authorized", "captured", "failed", "refunded"], default: "init", index: true },
-  txnId: { type: String, trim: true, index: true },
-  paidAt: { type: Date },
-  rawResponse: { type: mongoose.Schema.Types.Mixed },
-}, { _id: false });
-
-const amountsSchema = new mongoose.Schema({
-  itemSubtotal: { type: Number, required: true, min: 0 },
-  shippingFee: { type: Number, default: 0, min: 0 },
-  discount: { type: Number, default: 0, min: 0 },
-  tax: { type: Number, default: 0, min: 0 },
-  grandTotal: { type: Number, required: true, min: 0 },
-  currency: { type: String, default: "VND" },
-}, { _id: false });
-
-const orderSchema = new mongoose.Schema({
-  code: { type: String, required: true, unique: true, index: true }, // mã đơn
-  userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", index: true },
-  status: { 
-    type: String,
-    enum: ["pending", "paid", "picking", "shipped", "delivered", "cancelled", "refunded"],
-    default: "pending",
-    index: true
+// Lưu ý: nên dùng số nguyên "minor units" cho tiền tệ (VND)
+const orderItemSchema = new Schema(
+  {
+    productId: { type: Schema.Types.ObjectId, ref: "Product", required: true },
+    variantId: { type: Schema.Types.ObjectId, default: null },
+    name: String,
+    image: String,
+    attributes: { type: Map, of: String, default: {} },
+    qty: { type: Number, required: true, min: 1 },
+    priceAtAdd: { type: Number, required: true, min: 0 }, // đơn giá tại thời điểm đặt
+    lineTotal: { type: Number, required: true, min: 0 },  // qty * priceAtAdd
+    currency: { type: String, default: "VND" },
+    compareAtPrice: { type: Number },
   },
-  items: { type: [orderItemSchema], default: [], validate: v => Array.isArray(v) && v.length > 0 },
-  amounts: amountsSchema,
-  shippingAddress: addressSnapshotSchema,
-  billingAddress: addressSnapshotSchema,
-  shipping: shippingSchema,
-  payment: paymentSchema,
-  couponCode: { type: String, trim: true },
-  notes: { type: String, trim: true },
-}, { timestamps: true });
+  { _id: false }
+);
 
-orderSchema.index({ createdAt: -1 });
+const shippingAddressSchema = new Schema(
+  {
+    fullName: { type: String, required: true },
+    phone: { type: String, required: true },
+    addressLine1: { type: String, required: true },
+    ward: String,
+    district: String,
+    province: String,
+    country: { type: String, default: "VN" },
+  },
+  { _id: false }
+);
+
+const orderSchema = new Schema(
+  {
+    code: {
+      type: String,
+      unique: true,
+      index: true,
+      default: () =>
+        "ODR-" +
+        Math.random().toString(36).slice(2, 6).toUpperCase() +
+        "-" +
+        Date.now().toString(36).toUpperCase(),
+    },
+    user: { type: Schema.Types.ObjectId, ref: "User", required: true },
+
+    items: {
+      type: [orderItemSchema],
+      validate: {
+        validator: (v) => Array.isArray(v) && v.length > 0,
+        message: "Đơn hàng phải có ít nhất 1 sản phẩm",
+      },
+      required: true,
+    },
+
+    itemsTotal: { type: Number, required: true, min: 0 },
+    shippingFee: { type: Number, default: 0, min: 0 },
+    discountTotal: { type: Number, default: 0, min: 0 },
+    grandTotal: { type: Number, required: true, min: 0 },
+    currency: { type: String, default: "VND" },
+
+    shippingAddress: { type: shippingAddressSchema, required: true },
+    note: String,
+
+    paymentMethod: {
+      type: String,
+      enum: ["cod", "vnpay", "momo", "stripe", "paypal"],
+      default: "cod",
+    },
+    paymentStatus: {
+      type: String,
+      enum: ["unpaid", "paid", "refunded", "failed"],
+      default: "unpaid",
+    },
+    status: {
+      type: String,
+      enum: ["pending", "confirmed", "shipping", "completed", "cancelled"],
+      default: "pending",
+    },
+    paidAt: { type: Date },
+
+    meta: { type: Map, of: String },
+  },
+  { timestamps: true }
+);
+
+orderSchema.index({ user: 1, createdAt: -1 });
 
 module.exports = mongoose.model("Order", orderSchema);

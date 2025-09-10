@@ -1,7 +1,7 @@
-// routes/User.routes.js
 const express = require("express");
 const bcrypt = require("bcryptjs");
 const mongoose = require("mongoose");
+const jwt = require("jsonwebtoken");
 const User = require("../models/User.model");
 
 const router = express.Router();
@@ -18,7 +18,7 @@ const sanitizeUser = (userDoc) => {
 
 // ======================= USERS ======================= //
 
-// POST /users
+// Đăng ký user
 router.post(
   "/",
   asyncHandler(async (req, res) => {
@@ -40,7 +40,41 @@ router.post(
   })
 );
 
-// GET /users
+// Đăng nhập
+router.post(
+  "/login",
+  asyncHandler(async (req, res) => {
+    const { email, password } = req.body;
+    if (!email || !password) {
+      return res.status(400).json({ message: "Email và password là bắt buộc" });
+    }
+
+    // Lấy user với passwordHash
+    const user = await User.findOne({ email }).select("+passwordHash");
+    if (!user) {
+      return res.status(401).json({ message: "Email hoặc mật khẩu không đúng" });
+    }
+
+    const isMatch = await bcrypt.compare(password, user.passwordHash);
+    if (!isMatch) {
+      return res.status(401).json({ message: "Email hoặc mật khẩu không đúng" });
+    }
+
+    // Tạo JWT token
+    const token = jwt.sign(
+      { id: user._id, role: user.role },
+      process.env.JWT_SECRET || "dev_secret",
+      { expiresIn: "7d" }
+    );
+
+    res.json({
+      token,
+      user: sanitizeUser(user),
+    });
+  })
+);
+
+// Lấy danh sách user
 router.get(
   "/",
   asyncHandler(async (req, res) => {
