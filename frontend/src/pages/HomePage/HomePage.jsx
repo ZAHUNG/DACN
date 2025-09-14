@@ -2,13 +2,11 @@ import React from 'react'
 import TypeProduct from '../../components/TypeProduct/TypeProduct'
 import { WrapperTypeProduct,WrapperButtonMore,WrapperProducts } from './style'
 import SliderComponent from '../../components/SliderComponent/SliderComponent'
-import NavBarComponent from '../../components/NavbarComponent/NavBarComponent'
 import Slider1 from '../../assets/images/Slider1.webp'
 import Slider2 from '../../assets/images/Slider2.webp'
 import Slider3 from '../../assets/images/Slider3.webp'
-import { Card } from 'antd'
 import CardComponent from '../../components/CardComponent/CardComponent'
-import ButtonComponent from '../../components/ButtonComponent/ButtonComponent'
+
 
 const HomePage = () => {
   const arr =  ['TV','Tu lanh', 'Lap top']
