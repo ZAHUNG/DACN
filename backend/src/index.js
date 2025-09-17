@@ -10,6 +10,8 @@ const routes = require("./routes");
 
 dotenv.config();
 
+//require('dotenv').config();
+
 const app = express();
 const port = process.env.PORT || 3001;
 const apiPrefix = "/api";
