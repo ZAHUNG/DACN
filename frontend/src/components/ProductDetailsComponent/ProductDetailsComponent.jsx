@@ -2,13 +2,13 @@ import { Col, Row, Image, InputNumber } from 'antd'
 import React from 'react'
 import imageProduct from '../../assets/images/test.webp'
 import imageProductSmall from '../../assets/images/imagesmall.webp'
-import { WrapperStyleColImage, WrapperStyleImageSmall } from './style'
+import { WrapperStyleColImage, WrapperStyleImageSmall, WrapperStyleNameProduct, WrapperStyleTextSell, WrapperPriceProduct, WrapperPriceTextProduct, WrapperAddressProduct, WrapperQualitytProduct, WrapperInputNumber, onChange } from './style'
 import { PlusOutlined, StarFilled, MinusOutlined } from '@ant-design/icons'
 import ButtonComponent from '../ButtonComponent/ButtonComponent'
 
 
 const ProductDetailsComponent = () => {
-    const onChande = () => { }
+    const onChange = () => { }
     return (
         <Row style={{ padding:'16px', background: '#fff', borderRadius: '4px' }}>
             <Col span={10} style={{ borderRight: '1px solid #e5e5e5', paddingRight: '8px' }}>

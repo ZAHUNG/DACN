@@ -1,6 +1,6 @@
 import { Card } from 'antd'
 import React from 'react'
-import { StyleNameProduct, WrapperPriceText, WrapperReportText, WrapperDiscountText, WrapperCardStyle } from './style'
+import { StyleNameProduct, WrapperPriceText, WrapperReportText, WrapperDiscountText, WrapperCardStyle, WrapperStyleTextSell} from './style'
 import { StarFilled } from '@ant-design/icons'
 import logo from '../../assets/images/logo.png'
 
