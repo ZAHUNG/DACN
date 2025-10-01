@@ -6,13 +6,13 @@ const productSchema = new mongoose.Schema(
         image: { type: String, required: true, unique: true},
         type: { type: String, required: true},
         price: { type: Number, required: true},
-        countInStock: { type: Number, required: true}, // số lượng còn trong kho
-        rating: { type: Number, require: true},
-        description: { type: String, required: true},
+        countInStock: { type: Number, required: true},
+        rating: { type: Number, required: true},
+        description: { type: String },
     },
     {
         timestamps: true,
     }
 );
-const User = mongoose.model("Product", productSchema);
-module.exports = User;
+const Product = mongoose.model("Product", productSchema);
+module.exports = Product;
