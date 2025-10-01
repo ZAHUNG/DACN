@@ -10,12 +10,12 @@ import {
 import ButtonInputSearch from '../ButtonInputSearch/ButtonInputSearch';
 const HeaderComponent = () => {
   return (
-    <div>
+    <div style={{ width: '100%', background:'rgb (26,148,255)', display:'flex', justifyContent:'center'}}> 
       <WrapperHeader gutter={16}>
-        <Col span={6}>
+        <Col span={5}>
           <WrapperTextHeader>DOANCHUYENNGANH</WrapperTextHeader>
         </Col>
-        <Col span={12}>
+        <Col span={13}>
            <ButtonInputSearch
               size="large"
               bordered={false}
