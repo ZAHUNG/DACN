@@ -10,6 +10,8 @@ import { useNavigate } from 'react-router-dom';
 import { useMutationHooks } from '../../Hook/useMutationHook'
 import * as UserService from '../../services/UserService'
 import Loading from '../../components/LoadingComponent/Loading'
+import * as message from '../../components/Message/Message';
+import { useEffect } from 'react'
 
 
 
@@ -36,13 +38,23 @@ const SignUpPage = () => {
       data => UserService.signupUser(data)   
     )
 
-  const { data, isLoading } = mutation
+  const { data, isLoading, isSuccess, isError } = mutation
+
+  useEffect(() => {
+    if (isSuccess) {
+      message.success();
+      handleNavigateSignIn()
+    } else if (isError) {
+      message.error()
+    }
+  })
 
   const handleNavigateSignIn = () =>{
     navigate('/sign-in')
   }
 
   const handleSignUp = () => {
+    console.log('API URL:', process.env.REACT_APP_API_URL);
     mutation.mutate({ email, password, confirmPassword}, ) 
     console.log('sign up', {email, password, confirmPassword})
   }
@@ -50,6 +62,7 @@ const SignUpPage = () => {
 <div style={{display:'flex', alignItems:'center', justifyContent:'center', background:'rgb(0, 0, 0, 0.53)', height:'100vh'}}>
      <div style = {{ width:'800px', height:'445px', borderRadius:'6px', backgroundColor:'#fff', display:'flex'}}>
       <WrapperContainerLeft>
+        {/* <Loading isLoading={!!isLoading}> */}
         <h1>Xin Chào</h1>
         <p>Đăng nhập hoặc tạo tài khoản</p>
         <InputForm style = {{ marginBottom: '10px'}} placeholder="abc@gmail.com" value={email} onChange={handleOnchangeEmail}/>
@@ -94,8 +107,8 @@ const SignUpPage = () => {
           <InputForm style = {{ marginBottom: '10px'}} placeholder="Confirm Password" type= {isShowConfirmPassword ? "text" : "password"} 
               value={confirmPassword} onChange={handleOnchangeConfirmPassword}/>
           </div>
-          {/* {data?.status === 'ERR' && <span style={{color:'red'}}>{data?.message}</span>}
-          <Loading isLoading={isLoading}> */}
+           {/* {data?.status === 'ERR' && <span style={{color:'red'}}>{data?.message}</span>} */}
+          {/* <Loading isLoading={!!isLoading}>  */}
         <ButtonComponent
           disabled ={ !email.length || !password.length || !confirmPassword.length}
           onClick={handleSignUp}
@@ -114,7 +127,8 @@ const SignUpPage = () => {
         ></ButtonComponent>  
         {/* </Loading>          */}
                     
-      <p> Bạn đã có tài Khoản ? <WrapperContainerLight onClick={handleNavigateSignIn} style={{cursor: 'pointer'}} > Đăng Nhập</WrapperContainerLight></p>
+        <p> Bạn đã có tài Khoản ? <WrapperContainerLight onClick={handleNavigateSignIn} style={{cursor: 'pointer'}} > Đăng Nhập</WrapperContainerLight></p>
+        {/* </Loading> */}
       </WrapperContainerLeft>
       <WrapperContainerRight>
         <Image src={imageLogo} preview={false} alt= "imageLogo" height="203px" width="203px" />
