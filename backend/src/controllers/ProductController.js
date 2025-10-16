@@ -78,16 +78,17 @@ const deleteProduct = async(req, res) => {
 
 const getAllProduct = async(req, res) => {
     try {
-        const { limit = 8, page = 0 } = req.query;
+        const { limit, page, sort, filter } = req.query;
         const response = await ProductService.getAllProduct(
-            Number(limit),
-            Number(page)
+            Number(limit) || 8,
+            Number(page) || 0,
+            sort ? JSON.parse(sort) : null,
+            filter ? JSON.parse(filter) : null
         );
         return res.status(200).json(response);
     } catch (e) {
-        return res.status(500).json({
-            status: 'ERR',
-            message: e.message || 'Internal Server Error'
+        return res.status(404).json({
+            message: e
         });
     }
 } 
@@ -98,4 +99,5 @@ module.exports ={
     getDetailsProduct,
     deleteProduct,
     getAllProduct,
+
 }

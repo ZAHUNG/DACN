@@ -90,21 +90,55 @@ const deleteProduct = (id) => {
     })
 }
 
-const getAllProduct = (limit = 8, page = 0) => {
+const getAllProduct = (limit, page, sort, filter) => {
     return new Promise(async (resolve, reject) => {
         try {
             const totalProduct = await Product.countDocuments();
-            const products = await Product.find()
+
+            if (filter) {
+                const [field, value] = filter;
+                const allObjectFilter = await Product.find({ [field]: { '$regex': value, '$options': 'i' } })
+                    .limit(limit)
+                    .skip(page * limit);
+                resolve({
+                    status: 'OK',
+                    message: 'Success',
+                    data: allObjectFilter,
+                    total: totalProduct,
+                    pageCurrent: Number(page + 1),
+                    totalPage: Math.ceil(totalProduct / limit)
+                })
+                return;
+            }
+
+            if (sort) {
+                const objectSort = {};
+                objectSort[sort[1]] = sort[0];
+                const allProductSort = await Product.find()
+                    .limit(limit)
+                    .skip(page * limit)
+                    .sort(objectSort);
+                resolve({
+                    status: 'OK',
+                    message: 'Success',
+                    data: allProductSort,
+                    total: totalProduct,
+                    pageCurrent: Number(page + 1),
+                    totalPage: Math.ceil(totalProduct / limit)
+                })
+                return;
+            }
+
+            const allProduct = await Product.find()
                 .limit(limit)
                 .skip(page * limit);
-
             resolve({
                 status: 'OK',
-                message: 'SUCCESS',
-                data: products,
-                totalProduct,
-                currentPage: page,
-                limit
+                message: 'Success',
+                data: allProduct,
+                total: totalProduct,
+                pageCurrent: Number(page + 1),
+                totalPage: Math.ceil(totalProduct / limit)
             })
         } catch (e) {
             reject(e)
@@ -142,4 +176,5 @@ module.exports ={
     getDetailsProduct,
     deleteProduct,
     getAllProduct   
+
 }
