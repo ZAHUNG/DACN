@@ -1,11 +1,12 @@
 const mongoose = require('mongoose');
 
 const orderSchema = new mongoose.Schema({
+    user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
     orderItems: [
         {
-            name: { type: String, required: true },
+            // name: { type: String, required: true },
             amount: { type: Number, required: true }, // số lượng sản phẩm
-            image: { type: String, required: true },
+            // image: { type: String, required: true },
             price: { type: Number, required: true },
             product: {
                 type: mongoose.Schema.Types.ObjectId,
@@ -25,11 +26,15 @@ const orderSchema = new mongoose.Schema({
     shippingPrice: { type: Number, required: true },
     taxPrice: { type: Number, required: true },
     totalPrice: { type: Number, required: true },
-    user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
     isPaid: { type: Boolean, default: false },
     paidAt: { type: Date },
     isDelivered: { type: Boolean, default: false },
     deliveredAt: { type: Date },
+    status: { 
+        type: String, 
+        enum: ['processing', 'confirmed', 'shipping', 'completed', 'cancelled'], 
+        default: 'processing'
+        },
 }, {
     timestamps: true,
 });
