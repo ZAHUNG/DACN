@@ -1,16 +1,16 @@
 const User = require('../models/UserModel');
 const bcrypt = require('bcrypt');
-const { genneralAccessToken,genneralRefreshToken } = require('./JwtService');
+const { genneralAccessToken, genneralRefreshToken } = require('./JwtService');
 
 
 const createUser = (newUser) => {
     return new Promise(async (resolve, reject) => {
         const { name, email, password, confirmPassword, phone } = newUser;
-        try{
+        try {
             const checkUser = await User.findOne({
                 email: email
             })
-            if(checkUser !== null){
+            if (checkUser !== null) {
                 resolve({
                     status: 'ERR',
                     message: 'The email is already'
@@ -24,14 +24,14 @@ const createUser = (newUser) => {
                 password: hash,
                 phone
             })
-            if(createdUser){
+            if (createdUser) {
                 resolve({
                     status: 'OK',
                     message: 'Create user successfully',
                     data: createdUser
                 })
             }
-        }catch(e){
+        } catch (e) {
             reject(e)
         }
     })
@@ -39,12 +39,12 @@ const createUser = (newUser) => {
 
 const loginUser = (userLogin) => {
     return new Promise(async (resolve, reject) => {
-        const { email, password} = userLogin;
-        try{
+        const { email, password } = userLogin;
+        try {
             const checkUser = await User.findOne({
                 email: email
             })
-            if(checkUser === null){
+            if (checkUser === null) {
                 resolve({
                     status: 'ERR',
                     message: 'The user is not defined'
@@ -52,7 +52,7 @@ const loginUser = (userLogin) => {
             }
             const comparePassword = bcrypt.compareSync(password, checkUser.password)
             // console.log('comparePassword', comparePassword)
-            if(!comparePassword){
+            if (!comparePassword) {
                 resolve({
                     status: 'ERR',
                     message: 'The password of user is incorrect'
@@ -68,27 +68,27 @@ const loginUser = (userLogin) => {
                 isAdmin: checkUser.isAdmin
             })
             console.log('access_token', access_token)
-                resolve({
-                    status: 'OK',
-                    message: ' Login Successfully',
-                    access_token,
-                    refresh_token,
-                })
+            resolve({
+                status: 'OK',
+                message: ' Login Successfully',
+                access_token,
+                refresh_token,
+            })
             // }
-        }catch(e){
+        } catch (e) {
             reject(e)
         }
     })
 }
 
-const updateUser = (id,data) => {
+const updateUser = (id, data) => {
     return new Promise(async (resolve, reject) => {
-        try{
+        try {
             const checkUser = await User.findOne({
                 _id: id
             })
             console.log('checkUser', checkUser)
-            if(checkUser === null){
+            if (checkUser === null) {
                 resolve({
                     status: 'OK',
                     message: 'The user is not defined'
@@ -101,9 +101,9 @@ const updateUser = (id,data) => {
                 status: 'OK',
                 message: 'SUCCESS',
                 data: updateUser
-                })
+            })
             // }
-        }catch(e){
+        } catch (e) {
             reject(e)
         }
     })
@@ -111,12 +111,12 @@ const updateUser = (id,data) => {
 
 const deleteUser = (id) => {
     return new Promise(async (resolve, reject) => {
-        try{
+        try {
             const checkUser = await User.findOne({
                 _id: id
             })
             // console.log('checkUser', checkUser)
-            if(checkUser === null){
+            if (checkUser === null) {
                 resolve({
                     status: 'ERR',
                     message: 'The user is not defined'
@@ -128,9 +128,9 @@ const deleteUser = (id) => {
             resolve({
                 status: 'OK',
                 message: ' Delete user success',
-                })
+            })
             // }
-        }catch(e){
+        } catch (e) {
             reject(e)
         }
     })
@@ -138,14 +138,14 @@ const deleteUser = (id) => {
 
 const getAllUser = () => {
     return new Promise(async (resolve, reject) => {
-        try{
+        try {
             const allUser = await User.find()
             resolve({
                 status: 'OK',
                 message: 'SUCCESS',
                 data: allUser
-                })
-        }catch (e) {
+            })
+        } catch (e) {
             reject(e)
         }
     })
@@ -153,12 +153,12 @@ const getAllUser = () => {
 
 const getDetailsUser = (id) => {
     return new Promise(async (resolve, reject) => {
-        try{
+        try {
             const user = await User.findOne({
                 _id: id
             })
             // console.log('checkUser', checkUser)
-            if(user === null){
+            if (user === null) {
                 resolve({
                     status: 'ERR',
                     message: 'The user is not defined'
@@ -169,9 +169,9 @@ const getDetailsUser = (id) => {
                 status: 'OK',
                 message: 'SUCCESS',
                 data: user
-                })
+            })
             // }
-        }catch(e){
+        } catch (e) {
             reject(e)
         }
     })
@@ -179,7 +179,7 @@ const getDetailsUser = (id) => {
 
 const refreshTokenService = (token) => {
     return new Promise(async (resolve, reject) => {
-        try{
+        try {
             // const user = await User.findOne({
             //     _id: id
             // })
@@ -195,15 +195,15 @@ const refreshTokenService = (token) => {
             resolve({
                 status: 'OK',
                 message: 'SUCCESS',
-                })
+            })
             // }
-        }catch(e){
+        } catch (e) {
             reject(e)
         }
     })
 }
 
-module.exports ={
+module.exports = {
     createUser,
     loginUser,
     updateUser,

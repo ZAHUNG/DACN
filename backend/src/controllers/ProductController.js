@@ -1,6 +1,6 @@
 const ProductService = require("../services/ProductService");
 
-const createProduct = async(req, res) => {
+const createProduct = async (req, res) => {
     try {
         const { name, image, type, price, countInStock, rating, description } = req.body
         if (!name || !image || !type || !price || !countInStock || !rating) {
@@ -10,7 +10,7 @@ const createProduct = async(req, res) => {
             })
         }
         const response = await ProductService.createProduct(req.body)
-        
+
         return res.status(200).json(response)
     } catch (e) {
         return res.status(500).json({
@@ -19,7 +19,7 @@ const createProduct = async(req, res) => {
         })
     }
 }
-const updateProduct = async(req, res) => {
+const updateProduct = async (req, res) => {
     try {
         const productId = req.params.id
         const data = req.body
@@ -37,9 +37,9 @@ const updateProduct = async(req, res) => {
             message: e.message || 'Internal Server Error'
         })
     }
-} 
+}
 
-const getDetailsProduct = async(req, res) => {
+const getDetailsProduct = async (req, res) => {
     try {
         const productId = req.params.id
         if (!productId) {
@@ -57,11 +57,11 @@ const getDetailsProduct = async(req, res) => {
         })
     }
 }
-const deleteProduct = async(req, res) => {
+const deleteProduct = async (req, res) => {
     try {
         const productId = req.params.id
         const token = req.headers
-        if(!productId){
+        if (!productId) {
             return res.status(200).json({
                 status: 'ERR',
                 message: 'The productId is required'
@@ -69,14 +69,14 @@ const deleteProduct = async(req, res) => {
         }
         const response = await ProductService.deleteProduct(productId);
         return res.status(200).json(response)
-    }catch (e) {
+    } catch (e) {
         return res.status(404).json({
             message: e
         })
     }
 }
 
-const getAllProduct = async(req, res) => {
+const getAllProduct = async (req, res) => {
     try {
         const { limit = 8, page = 0 } = req.query;
         const response = await ProductService.getAllProduct(
@@ -90,9 +90,9 @@ const getAllProduct = async(req, res) => {
             message: e.message || 'Internal Server Error'
         });
     }
-} 
+}
 
-module.exports ={
+module.exports = {
     createProduct,
     updateProduct,
     getDetailsProduct,

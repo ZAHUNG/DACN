@@ -4,11 +4,11 @@ const Product = require('../models/ProductModel');
 const createProduct = (newProduct) => {
     return new Promise(async (resolve, reject) => {
         const { name, image, type, price, countInStock, rating, description } = newProduct
-        try{
+        try {
             const checkProduct = await Product.findOne({
                 name: name
             })
-            if(checkProduct !== null){
+            if (checkProduct !== null) {
                 resolve({
                     status: 'ERR',
                     message: 'The name of product is already'
@@ -18,25 +18,25 @@ const createProduct = (newProduct) => {
             const createdProduct = await Product.create({
                 name, image, type, price, countInStock, rating, description
             })
-            if(createdProduct){
+            if (createdProduct) {
                 resolve({
                     status: 'OK',
                     message: 'Create product successfully',
                     data: createdProduct
                 })
-            } 
+            }
         } catch (e) {
             reject(e)
         }
     })
 }
-const updateProduct = (id,data) => {
+const updateProduct = (id, data) => {
     return new Promise(async (resolve, reject) => {
-        try{
+        try {
             const checkProduct = await Product.findOne({
                 _id: id
             })
-            if(checkProduct === null){
+            if (checkProduct === null) {
                 resolve({
                     status: 'ERR',
                     message: 'Product not found'
@@ -57,7 +57,7 @@ const updateProduct = (id,data) => {
                 })
             }
             // }
-        }catch(e){
+        } catch (e) {
             reject(e)
         }
     })
@@ -65,12 +65,12 @@ const updateProduct = (id,data) => {
 
 const deleteProduct = (id) => {
     return new Promise(async (resolve, reject) => {
-        try{
+        try {
             const checkProduct = await Product.findOne({
                 _id: id
             })
             // console.log('checkUser', checkUser)
-            if(checkProduct === null){
+            if (checkProduct === null) {
                 resolve({
                     status: 'ERR',
                     message: 'The product is not defined'
@@ -82,9 +82,9 @@ const deleteProduct = (id) => {
             resolve({
                 status: 'OK',
                 message: ' Delete product success',
-                })
+            })
             // }
-        }catch(e){
+        } catch (e) {
             reject(e)
         }
     })
@@ -130,16 +130,16 @@ const getDetailsProduct = (id) => {
                     data: product
                 })
             }
-        } catch(e) {
+        } catch (e) {
             reject(e)
         }
     })
 }
 
-module.exports ={
+module.exports = {
     createProduct,
     updateProduct,
     getDetailsProduct,
     deleteProduct,
-    getAllProduct   
+    getAllProduct
 }

@@ -33,25 +33,25 @@ const SignInPage = () => {
   const { data, isLoading, isSuccess} = mutation
 
   useEffect(() => {
-      if (isSuccess) {
-        message.success();
-        navigate('/')
-        localStorage.setItem('access_token', JSON.stringify(data?.access_token))
-        if (data?.access_token) {
-          const decoded = jwtDecode(data?.access_token)
-          // console.log('decode', decoded);
-          if(decoded?.id) {
-            handleGetDetailsUser(decoded?.id, data?.access_token)
-          }
+    if (isSuccess) {
+      message.success();
+      navigate('/')
+      localStorage.setItem('access_token', JSON.stringify(data?.access_token))
+      if (data?.access_token) {
+        const decoded = jwtDecode(data?.access_token)
+        // console.log('decode', decoded);
+        if(decoded?.id) {
+          handleGetDetailsUser(decoded?.id, data?.access_token)
         }
-      } 
-    }, [isSuccess])
+      }
+    } 
+  }, [isSuccess])
 
-    const handleGetDetailsUser = async (id, token) => {
-      const res = await UserService.getDetailsUser(id, token)
-      dispatch(updateUser({...res?.data, access_token: token}))
-      // console.log('res', res)
-    }
+  const handleGetDetailsUser = async (id, token) => {
+    const res = await UserService.getDetailsUser(id, token)
+    dispatch(updateUser({...res?.data, access_token: token}))
+    // console.log('res', res)
+  }
 
   const handleNavigateSignUp = () => {
     navigate('/sign-up')
@@ -101,23 +101,23 @@ const SignInPage = () => {
        {/* {data?.status === 'ERR' && <span style={{color:'red'}}>{data?.message}</span>} */}
        {/* <Loading isLoading={isLoading}> */}
         <ButtonComponent
-        disabled ={ !email.length || !password.length }
-        onClick={handleSignIn}
-        size={40}
-        styleButton={{
-        background: 'rgb(255, 57, 69)',
-        height: '48px',
-        width: '100%',
-        bordered: 'none',
-        borderedRadius: '4px',
-        margin: '26px 0 10px'
-                        }} 
-        textButton={'Đăng Nhập'}
-        styleTextButton={{ color: '#fff', fontSize: '15px', fontWeight: '700' }}
-    ></ButtonComponent>
-    {/* </Loading> */}
-      <p><WrapperContainerLight>Quên Mật Khẩu ?</WrapperContainerLight></p>
-      <p> Chưa có tài Khoản ? <WrapperContainerLight onClick={handleNavigateSignUp} style={{cursor: 'pointer'}}> Tạo Tài Khoản</WrapperContainerLight></p>
+          disabled ={ !email.length || !password.length }
+          onClick={handleSignIn}
+            size={40}
+            styleButton={{
+            background: 'rgb(255, 57, 69)',
+            height: '48px',
+            width: '100%',
+            bordered: 'none',
+            borderedRadius: '4px',
+            margin: '26px 0 10px'
+          }} 
+          textButton={'Đăng Nhập'}
+          styleTextButton={{ color: '#fff', fontSize: '15px', fontWeight: '700' }}
+        ></ButtonComponent>
+        {/* </Loading> */}
+        <p><WrapperContainerLight>Quên Mật Khẩu ?</WrapperContainerLight></p>
+        <p> Chưa có tài Khoản ? <WrapperContainerLight onClick={handleNavigateSignUp} style={{cursor: 'pointer'}}> Tạo Tài Khoản</WrapperContainerLight></p>
       </WrapperContainerLeft>
       <WrapperContainerRight>
         <Image src={imageLogo} preview={false} alt= "imageLogo" height="203px" width="203px" />
