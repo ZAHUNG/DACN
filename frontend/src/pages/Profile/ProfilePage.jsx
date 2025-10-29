@@ -66,6 +66,7 @@ const ProfilePage = () => {
     const handleOnchangeAddress = (value) => {
         setAddress(value)
     }
+
     const handleOnchangeAvatar = async ({fileList}) => {
         const file = fileList[0]
         if (!file.url && !file.preview) {
@@ -73,9 +74,11 @@ const ProfilePage = () => {
         }
         setAvatar(file.preview)
     }
+
     const handleUpdate = () => {
         mutation.mutate ({ id: user?.id, email, name, phone, address, avatar, access_token: user?.access_token })
     }
+    
     return (
         <div style={{ width: '1270px', margin: '0 auto', height: '500px' }}>
             <WrapperHeader>Thông tin người dùng</WrapperHeader>

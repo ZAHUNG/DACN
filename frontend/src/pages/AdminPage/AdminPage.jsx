@@ -39,8 +39,6 @@ const AdminPage = () => {
             <div style={{ display: 'flex', }}>
                 <Menu
                     mode="inline"
-                    // openKeys={openKeys}
-                    // onOpenChange={onOpenChange}
                     style={{
                         width: 256,
                         boxShadow: '1px 1px 2px #ccc',
