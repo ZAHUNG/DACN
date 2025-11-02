@@ -285,7 +285,7 @@ const AdminProduct = () => {
                 }}/>
             </div>
             <ModalComponent title="Tạo sản phẩm" open={isModalOpen} onCancel={handleCancel} footer={null}>
-                <Loading isLoading={isLoading}>
+                {/* <Loading isLoading={isLoading}> */}
                     <Form
                         name="basic"
                         labelCol={{ span: 6 }}
@@ -347,7 +347,7 @@ const AdminProduct = () => {
                             name="image"
                             rules={[{ required: true, message: 'Please input your image!' }]}
                         >
-                            <WrapperUploadFile onChange={handleOnchangeAvatar} maxCount={1}>
+                            <WrapperUploadFile action={false} beforeUpload={() => false} onChange={handleOnchangeAvatar} maxCount={1}>
                                 <Button>Select File</Button>
                                 {stateProduct?.image && (
                                     <img src={stateProduct?.image} style={{
@@ -367,7 +367,7 @@ const AdminProduct = () => {
                             </Button>
                         </Form.Item>
                     </Form>
-                </Loading>
+                {/* </Loading> */}
             </ModalComponent>
             <DrawerComponent title='Chi tiết sản phẩm' isOpen={isOpenDrawer} onClose={() => setIsOpenDrawer(false)} width="90%">
                 <Loading isLoading={isLoadingUpdate || isLoadingUpdate}>
