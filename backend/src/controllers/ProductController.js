@@ -13,9 +13,10 @@ const createProduct = async (req, res) => {
 
         return res.status(200).json(response)
     } catch (e) {
-        return res.status(500).json({
-            status: 'ERR',
-            message: e.message || 'Internal Server Error'
+        // console.log("❌ ERROR in createProduct:", e);
+    return res.status(500).json({
+        status: 'ERR',
+        message: e.message || 'Internal Server Error'
         })
     }
 }
