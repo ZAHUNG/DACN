@@ -5,7 +5,7 @@ const { genneralAccessToken, genneralRefreshToken } = require('./JwtService');
 
 const createUser = (newUser) => {
     return new Promise(async (resolve, reject) => {
-        const { name, email, password, confirmPassword, phone } = newUser;
+        const { name, email, password, confirmPassword, phone, address } = newUser;
         try {
             const checkUser = await User.findOne({
                 email: email
@@ -22,7 +22,8 @@ const createUser = (newUser) => {
                 name,
                 email,
                 password: hash,
-                phone
+                phone,
+                address
             })
             if (createdUser) {
                 resolve({
@@ -136,14 +137,20 @@ const deleteUser = (id) => {
     })
 }
 
-const getAllUser = () => {
+const getAllUser = (limit = 10, page = 0) => {
     return new Promise(async (resolve, reject) => {
         try {
+            const totalUser = await User.countDocuments();
             const allUser = await User.find()
+                .limit(limit)
+                .skip(page * limit);
             resolve({
                 status: 'OK',
                 message: 'SUCCESS',
-                data: allUser
+                data: allUser,
+                totalUser,
+                currentPage: page,
+                limit
             })
         } catch (e) {
             reject(e)

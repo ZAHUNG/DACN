@@ -136,10 +136,26 @@ const getDetailsProduct = (id) => {
     })
 }
 
+const deleteMany = (ids) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const deletedProducts = await Product.deleteMany({ _id: { $in: ids } })
+            resolve({
+                status: 'OK',
+                message: 'Delete products success',
+                data: deletedProducts
+            })
+        } catch (e) {
+            reject(e)
+        }
+    })
+}
+
 module.exports = {
     createProduct,
     updateProduct,
     getDetailsProduct,
     deleteProduct,
-    getAllProduct
+    getAllProduct,
+    deleteMany
 }
