@@ -109,8 +109,10 @@ const AdminProduct = () => {
     }
 
     useEffect(() => {
+    if (stateProductDetails) {
         form.setFieldsValue(stateProductDetails)
-    }, [form, setStateProductDetails])
+    }
+    }, [stateProductDetails, form])
 
     useEffect(() => {
         if(rowSelected){
