@@ -111,6 +111,22 @@ const deleteMany = async (req, res) => {
     }
 }
 
+const getAllType = async (req, res) => {
+    try {
+
+        const response = await ProductService.getAllType(
+            // Number(limit),
+            // Number(page)
+        );
+        return res.status(200).json(response);
+    } catch (e) {
+        return res.status(500).json({
+            status: 'ERR',
+            message: e.message || 'Internal Server Error'
+        });
+    }
+}
+
 module.exports = {
     createProduct,
     updateProduct,
@@ -118,4 +134,5 @@ module.exports = {
     deleteProduct,
     getAllProduct,
     deleteMany,
+    getAllType,
 }

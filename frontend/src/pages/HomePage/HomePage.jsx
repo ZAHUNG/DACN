@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import TypeProduct from '../../components/TypeProduct/TypeProduct'
 import { WrapperTypeProduct,WrapperButtonMore,WrapperProducts } from './style'
 import SliderComponent from '../../components/SliderComponent/SliderComponent'
@@ -8,29 +8,57 @@ import Slider3 from '../../assets/images/Slider3.webp'
 import CardComponent from '../../components/CardComponent/CardComponent'
 import * as ProductService from '../../services/ProductService';
 import { useQuery } from '@tanstack/react-query'
+import { useSelector } from 'react-redux'
+import { useState } from 'react'
+import Loading from '../../components/LoadingComponent/Loading'
+import { useDebounce } from '../../Hook/useDebounceHook'
+
 
 
 const HomePage = () => {
-  const arr =  ['TV','Tu lanh', 'Lap top']
-  const fetchProductAll = async () => {
-    const res = await ProductService.getAllProduct()
-    console.log('res', res)
+  const searchProduct = useSelector((state) => state?.product?.search)
+  const searchDebounce = useDebounce(searchProduct,1000)
+  const [loading, setLoading] = useState (false)
+  const [limit, setLimit] = useState (6)
+
+  const [typeProduct, setTypeProduct] = useState ([])
+  const fetchProductAll = async (context) => {
+    console.log('context',context)
+    const limit = context?.queryKey && context?.queryKey[1]
+    const search = context?.queryKey && context?.queryKey[2]
+    const res = await ProductService.getAllProduct(search, limit)
+    
     return res
-  }
-  const { isLoading, data: products } = useQuery({
-    queryKey: ['products'],
+    }
+
+    const fetchAllTypeProduct = async () => {
+      const res = await ProductService.getAllTypeProduct()
+      if(res?.status === 'OK'){
+        setTypeProduct(res?.data)
+        
+      }
+     
+    }
+
+  const { isLoading, data: products, isPrevousData } = useQuery({
+    queryKey: ['products', limit, searchDebounce],
     queryFn: fetchProductAll,
     retry: 3,
-    retryDelay: 1000
+    retryDelay: 1000,
+    keepPreviousData: true,
   })
 
-  console.log('data', products)
+    useEffect(() => {
+      fetchAllTypeProduct()
+
+    }, [])
+
 
   return (
-    <>
+    <Loading isLoading = {isLoading || loading}>
       <div style={{ width:'1270px', margin:'0 auto' }}>
         <WrapperTypeProduct>
-          {arr.map((item) => {
+          {typeProduct.map((item) => {
             return(
               <TypeProduct name={item} key={item} />
             )
@@ -42,6 +70,7 @@ const HomePage = () => {
           <SliderComponent arrImages={[ Slider1, Slider2, Slider3]} />
           <WrapperProducts>
             {products?.data?.map((product) => {
+              console.log('product', product)
               return (
                 <CardComponent 
                   key={product._id} 
@@ -54,6 +83,7 @@ const HomePage = () => {
                   type={product.type}
                   selled={product.selled}
                   discount={product.discount}
+                  id ={product._id}
                 />
               )
             })}
@@ -70,21 +100,25 @@ const HomePage = () => {
           </WrapperProducts>
           <div style={{ width: '100%', display: 'flex', justifyContent: 'center', marginTop: '10px' }}>
             <WrapperButtonMore
-              textButton="Xem thêm"
+            
+              textButton= {isPrevousData ? 'Load More': "Xem thêm" }
               type="outline"
               styleButton={{
                 border: '1px solid rgb(11, 116, 229)',
-                color: 'rgb(11, 116, 229)',
+                color: `${products?.total === products?.data?.length ? '#ccc': 'rgb(11, 116, 229)'}`,
                 width: '240px',
                 height: '38px',
                 borderRadius: '4px'
               }}
-              styleTextButton={{ fontWeight: 500 }}
+              disabled={products?.total === products?.data?.length || products?.totalPage === 1}
+              styleTextButton={{ fontWeight: 500 , color: products?.total === products?.data?.length && '#fff' }}
+              onClick = {() => setLimit((prev) => prev + 6)}
+
             />
           </div>
         </div>
       </div>
-    </>
+    </Loading>
   )
 }
 

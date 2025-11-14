@@ -98,8 +98,8 @@ const SignInPage = () => {
            <InputForm  placeholder="Password" type= {isShowPassWord ? "text" : "password"} value={password} onChange={handleOnchangePassword} />
         </div>
        
-       {/* {data?.status === 'ERR' && <span style={{color:'red'}}>{data?.message}</span>} */}
-       {/* <Loading isLoading={isLoading}> */}
+        {data?.status === 'ERR' && <span style={{color:'red'}}>{data?.message}</span>} 
+      {/* <Loading isLoading={isLoading}>  */}
         <ButtonComponent
           disabled ={ !email.length || !password.length }
           onClick={handleSignIn}
@@ -115,7 +115,7 @@ const SignInPage = () => {
           textButton={'Đăng Nhập'}
           styleTextButton={{ color: '#fff', fontSize: '15px', fontWeight: '700' }}
         ></ButtonComponent>
-        {/* </Loading> */}
+        {/* </Loading>  */}
         <p><WrapperContainerLight>Quên Mật Khẩu ?</WrapperContainerLight></p>
         <p> Chưa có tài Khoản ? <WrapperContainerLight onClick={handleNavigateSignUp} style={{cursor: 'pointer'}}> Tạo Tài Khoản</WrapperContainerLight></p>
       </WrapperContainerLeft>

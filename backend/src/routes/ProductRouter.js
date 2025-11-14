@@ -9,5 +9,6 @@ router.get('/details/:id', ProductController.getDetailsProduct);
 router.delete('/delete/:id', authMiddlewear, ProductController.deleteProduct);
 router.post('/delete-many', authMiddlewear, ProductController.deleteMany);
 router.get('/all', ProductController.getAllProduct);
+router.get('/get-all-type', ProductController.getAllType);
 
 module.exports = router;

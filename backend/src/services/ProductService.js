@@ -151,11 +151,27 @@ const deleteMany = (ids) => {
     })
 }
 
+const getAllType = () => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const alltype = await Product.distinct("type");
+            resolve({
+                status: 'OK',
+                message: 'SUCCESS',
+                data: alltype,
+           })
+        } catch (e) {
+            reject(e)
+        }
+    })
+}
+
 module.exports = {
     createProduct,
     updateProduct,
     getDetailsProduct,
     deleteProduct,
     getAllProduct,
-    deleteMany
+    deleteMany,
+    getAllType
 }
