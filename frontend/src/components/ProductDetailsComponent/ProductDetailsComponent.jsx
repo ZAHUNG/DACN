@@ -9,12 +9,17 @@ import * as ProductService from '../../services/ProductService'
 import { useQuery } from '@tanstack/react-query'
 import Loading from '../LoadingComponent/Loading'
 import { useState } from 'react'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
+import { useLocation, useNavigate } from 'react-router-dom'
+import { addOrderProduct } from '../../redux/slides/orderSlide'
 
 
 const ProductDetailsComponent = ({idProduct}) => {
     const[numProduct, setNumProduct] = useState(1)
     const user = useSelector ((state) => state.user)
+    const navigate = useNavigate()
+    const location = useLocation()
+    const dispatch = useDispatch()
 
     const onChange = (value) => { 
         setNumProduct(Number(value))
@@ -28,20 +33,36 @@ const ProductDetailsComponent = ({idProduct}) => {
             }
    
          }
-         const handleChangeCount = (type) => {
-            if (type === 'increase') {
-                setNumProduct(numProduct + 1 )
-            } else {
-                setNumProduct(numProduct - 1)
-            }
-         }
+    const handleChangeCount = (type) => {
+        if (type === 'increase') {
+            setNumProduct(numProduct + 1 )
+        } else {
+            setNumProduct(numProduct - 1)
+        }
+    }
 
-         const { isLoading, data: productDetails } = useQuery({
-            queryKey: ['product-details', idProduct],
-            queryFn: fetchGetDetailsProduct,
-            enabled: !!idProduct
-          })
-          console.log('productDetails', productDetails)
+    const handleAddOrderProduct = () => {
+        if(!user?.id){
+            navigate('/sign-in', {state: location?.pathname})
+        }else{
+            dispatch(addOrderProduct({
+                orderItem:{
+                    name: productDetails?.name,
+                    amount: numProduct,
+                    image: productDetails?.image,
+                    price: productDetails?.price,
+                    product: productDetails?.id
+                }
+            }))
+        }
+    }
+
+    const { isLoading, data: productDetails } = useQuery({
+    queryKey: ['product-details', idProduct],
+    queryFn: fetchGetDetailsProduct,
+    enabled: !!idProduct
+    })
+    console.log('productDetails', productDetails)
 
     return (
         // <Loading> 
@@ -106,6 +127,7 @@ const ProductDetailsComponent = ({idProduct}) => {
                             bordered: 'none',
                             borderedRadius: '4px'
                         }} 
+                        onClick={handleAddOrderProduct}
                         textButton={'Chọn mua'}
                         styleTextButton={{ color: '#fff', fontSize: '15px', fontWeight: '700' }}
                     ></ButtonComponent>
