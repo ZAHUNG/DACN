@@ -1,8 +1,9 @@
 import { DeleteOutlined, MinusOutlined, PlusOutlined } from '@ant-design/icons';
+import { Radio} from "antd";
 import { Checkbox, Form } from 'antd';
 import React, { useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { WrapperTotal,WrapperLeft,WrapperStyleHeader, WrapperListOrder,WrapperItemOrder, WrapperCountOrder, WrapperRight, WrapperInfo  } from './style';
+import { WrapperTotal,WrapperLeft,WrapperStyleHeader, WrapperListOrder,WrapperItemOrder, WrapperCountOrder, WrapperRight, WrapperInfo, Lable, WrapperRadio} from './style';
 import ButtonComponent from '../../components/ButtonComponent/ButtonComponent';
 import { decreaseAmount, increaseAmount, removeAllOrderProduct, removeOrderProduct, selectedOrder } from '../../redux/slides/orderSlide';
 import { convertPrice } from '../../utils';
@@ -19,6 +20,7 @@ import { updateUser } from '../../redux/slides/userSlide';
 const PaymentPage = () => {
   const order = useSelector((state) => state.order);
   const user = useSelector((state) => state.user);
+  const [delivery, setDelivery] = useState('standard')
   const orderItems = useSelector((state) => state.order);
   const [payment, setPayment] = useState('COD')
   const [listChecked, setListChecked] = useState([])
@@ -87,24 +89,36 @@ const PaymentPage = () => {
 
   
   const handleAddOrder = () => {
-  const payload = {
-    orderItems: order?.orderItemsSelected,
+  const orderItems = order?.orderItemsSelected || [];
 
-    shippingAddress: {
-      fullname: user?.name || stateUserDetails.name,
-      address: user?.address || stateUserDetails.address,
-      city: user?.city || stateUserDetails.city,
-      phone: stateUserDetails.phone || user?.phone
-    },
+  // Validate đơn hàng
+  if (!user?.access_token) {
+    return message.error("Bạn chưa đăng nhập!");
+  }
 
-    paymentMethod: payment,
-    itemsPrice: priceMemo,
-    shippingPrice: deliveryPriceMemo,
-    totalPrice: totalPriceMemo,
-    user: user?.id,
+  if (!orderItems.length) {
+    return message.error("Giỏ hàng rỗng!");
+  }
+
+  // Ưu tiên thông tin người dùng đã sửa trong stateUserDetails
+  const shippingAddress = {
+    fullname: stateUserDetails.name || user?.name,
+    address: stateUserDetails.address || user?.address,
+    city: stateUserDetails.city || user?.city,
+    phone: stateUserDetails.phone || user?.phone,
   };
 
-  console.log("ORDER PAYLOAD SEND:", payload);
+  const payload = {
+    orderItems,
+    shippingAddress,
+    paymentMethod: payment,
+    itemsPrice: priceMemo || 0,
+    shippingPrice: deliveryPriceMemo || 0,
+    totalPrice: totalPriceMemo || 0,
+    user: user?.id
+  };
+
+  // console.log("ORDER PAYLOAD SEND:", payload);
 
   mutationAddOrder.mutate({
     token: user?.access_token,
@@ -131,6 +145,15 @@ const PaymentPage = () => {
       )
 
   const { isLoading, data} = mutationUpdate;
+  const {data: dataAdd, isLoading: isLoadingAddOrder, isSuccess, isError} = mutationAddOrder;
+
+  useEffect(() => {
+    if ( isSuccess && dataAdd?.status === 'OK' ) {
+      message.success("Đặt hàng thành công!");
+    } else if ( isError){
+      message.error("Đặt hàng thất bại!");
+    }
+  },[isSuccess, isError]);
 
 
   const handleCancleUpdate = () => {
@@ -166,53 +189,38 @@ const PaymentPage = () => {
     }
   console.log('stateUserDetails', stateUserDetails);
 
+  const handleDelivery = (e) => {
+    setDelivery(e.target.value)
+  }
+  const handlePayment = (e) => {
+    setPayment(e.target.value)
+  }
+
+
   return (
     <div style={{background:'#f5f5fa', width:'100%', height: '100vh'}}>
+      {/* <Loading isLoading={isLoadingAddOrder}> */}
       <div style={{height: '100%',width: '1270px', margin: '0 auto'}}>
         <h3>Phương thức thanh toán</h3>
         <div style={{display: 'flex', justifyContent: 'center'}}>
           <WrapperLeft>
               <WrapperInfo>
-                    <div>
-                        <span style={{ fontSize: '16px', fontWeight: 'bold' }}>Chọn phương thức giao hàng</span>
-                    </div>
-                    
-                    {/* Giả lập lựa chọn Giao hàng, giá trị được tính ở deliveryPriceMemo */}
-                    <div style={{ marginTop: '10px' }}>
-                        <div style={{ padding: '10px', border: '1px solid #ccc', borderRadius: '4px', marginBottom: '8px' }}>
-                            <input type="radio" checked={true} readOnly />
-                            <label style={{ marginLeft: '8px', fontWeight: 'bold' }}>Giao hàng tiêu chuẩn</label>
-                            <p style={{ margin: '0 0 0 25px', fontSize: '12px', color: '#000' }}>Phí: {convertPrice(deliveryPriceMemo)}</p>
-                        </div>
-                    </div>
-                </WrapperInfo>
-                
-                {/* 2. CHỌN PHƯƠNG THỨC THANH TOÁN */}
-                <WrapperInfo>
-                    <div>
-                        <span style={{ fontSize: '16px', fontWeight: 'bold' }}>Chọn phương thức thanh toán</span>
-                    </div>
-                    
-                    <div style={{ marginTop: '10px' }}>
-                        {/* Thanh toán khi nhận hàng (COD) */}
-                        <div 
-                            onClick={() => setPayment('COD')} 
-                            style={{ padding: '10px', border: payment === 'COD' ? '1px solid blue' : '1px solid #ccc', borderRadius: '4px', cursor: 'pointer' }}
-                        >
-                            <input type="radio" checked={payment === 'COD'} onChange={() => setPayment('COD')} />
-                            <label style={{ marginLeft: '8px' }}>Thanh toán khi nhận hàng</label>
-                        </div>
-                        
-                        {/* Ví dụ về phương thức khác (nếu có) */}
-                        {/* <div 
-                            onClick={() => setPayment('PAYPAL')} 
-                            style={{ padding: '10px', border: payment === 'PAYPAL' ? '1px solid blue' : '1px solid #ccc', borderRadius: '4px', cursor: 'pointer', marginTop: '8px' }}
-                        >
-                            <input type="radio" checked={payment === 'PAYPAL'} onChange={() => setPayment('PAYPAL')} />
-                            <label style={{ marginLeft: '8px' }}>Thanh toán qua PayPal</label>
-                        </div> */}
-                    </div>
-                </WrapperInfo>
+                <div>
+                  <Lable>Chọn phương thức giao hàng</Lable>
+                  <WrapperRadio onChange={handleDelivery} value={delivery}>
+                    <Radio value="fast"><span style={{color: '#ea8500', fontWeight: 'bold'}}>Fast</span></Radio>
+                    <Radio value="gojek"><span style={{color: '#ea8500', fontWeight: 'bold'}}>Gojek</span></Radio>
+                  </WrapperRadio>
+                </div>
+              </WrapperInfo>
+              <WrapperInfo>
+                <div>
+                  <Lable>Chọn phương thức thanh toán</Lable>
+                  <WrapperRadio onChange={handlePayment} value={payment}>
+                    <Radio value="later_money">Thanh toán khi nhận hàng</Radio>
+                  </WrapperRadio>
+                </div>
+              </WrapperInfo>
           </WrapperLeft>
           <WrapperRight>
             <div style={{width: '100%'}}>
@@ -307,6 +315,7 @@ const PaymentPage = () => {
                 </>
                 {/* </Loading> */}
         </ModalComponent>
+      {/* </Loading> */}
     </div>
   )
 }
