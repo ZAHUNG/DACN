@@ -9,6 +9,7 @@ const userSchema = new mongoose.Schema(
         address: { type: String },
         access_token: { type: String },
         refresh_token: { type: String },
+        city: { type: String }
     },
     {
         timestamps: true,

@@ -42,6 +42,7 @@ const AdminProduct = () => {
         rating: '',
         image: '',
         newType:'',
+        discount:''
     })
     const [stateProductDetails, setStateProductDetails] = useState({
         name: '',
@@ -50,15 +51,16 @@ const AdminProduct = () => {
         price: '',
         description: '',
         rating: '',
-        image: ''
+        image: '',
+        discount:''
     })
 
     const [form] = Form.useForm();
 
     const mutation = useMutationHooks(
         (data) => {
-            const { name, type, countInStock, price, description, rating, image } = data
-            const res = ProductService.createProduct({name, type, countInStock, price, description, rating, image})
+            const { name, type, countInStock, price, description, rating, image, discount } = data
+            const res = ProductService.createProduct({name, type, countInStock, price, description, rating, image, discount})
             return res
         }
     )
@@ -88,7 +90,7 @@ const AdminProduct = () => {
     )
 
     const getAllProduct = async () => {
-        const res = await ProductService.getAllProduct(pageSize, currentPage)
+        const res = await ProductService.getAllProduct()
         return res
     }
     const getAllProductFull = async () => {
@@ -105,7 +107,8 @@ const AdminProduct = () => {
                 price: res?.data?.price,
                 description: res?.data?.description,
                 rating: res?.data?.rating,
-                image: res?.data?.image
+                image: res?.data?.image,
+                discount: res?.data?.discount
             })
         }
         setIsLoadingUpdate(false)
@@ -255,7 +258,8 @@ const AdminProduct = () => {
             price: '',
             description: '',
             rating: '',
-            image: ''
+            image: '',
+            discount:''
         })
         form.resetFields()
     };
@@ -269,6 +273,7 @@ const AdminProduct = () => {
             description: stateProduct.description,
             rating: stateProduct.rating,
             image: stateProduct.image,
+            discount: stateProduct.discount
         }
         mutation.mutate(params,{
             onSettled: () => {
@@ -508,9 +513,9 @@ const AdminProduct = () => {
                                 />
                                
                         </Form.Item>
-                     {setStateProduct.type === 'add_type' && (
+                    {setStateProduct.type === 'add_type' && (
                              <Form.Item
-                             lable='New type'
+                             label='New type'
                              name="newType"
                              rules={[{ required: true, message: 'Please input your type!' }]}
                          >
@@ -554,6 +559,14 @@ const AdminProduct = () => {
                             <InputComponent value={stateProduct.rating} onChange={handleOnChange} name="rating" />
                         </Form.Item>
                         
+                        <Form.Item
+                            label="Discount"
+                            name="discount"
+                            rules={[{ required: true, message: 'Please input your discount of product!' }]}
+                        >
+                            <InputComponent value={stateProduct.discount} onChange={handleOnChange} name="discount" />
+                        </Form.Item>
+
                         <Form.Item
                             label="Image"
                             name="image"
@@ -638,7 +651,15 @@ const AdminProduct = () => {
                         >
                             <InputComponent value={stateProductDetails.rating} onChange={handleOnChangeDetails} name="rating" />
                         </Form.Item>
-                        
+
+                        <Form.Item
+                            label="Discount"
+                            name="discount"
+                            rules={[{ required: true, message: 'Please input your discount or product!' }]}
+                        >
+                            <InputComponent value={stateProductDetails.discount} onChange={handleOnChangeDetails} name="discount" />
+                        </Form.Item>
+
                         <Form.Item
                             label="Image"
                             name="image"

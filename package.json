@@ -1,5 +1,6 @@
 {
   "dependencies": {
-    "jwt-decode": "^4.0.0"
+    "jwt-decode": "^4.0.0",
+    "redux-persist": "^6.0.0"
   }
 }

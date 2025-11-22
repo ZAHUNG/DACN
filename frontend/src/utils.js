@@ -42,3 +42,13 @@ export const renderOptions = (arr) => {
     })
     return results
 }
+
+export const convertPrice = (price) =>{
+    try {
+        const result = price?.toLocaleString().replaceAll(',', '.')
+        console.log('price', price)
+        return `${result} VND`
+    }catch(error){
+        return null
+    }
+}

@@ -12,6 +12,7 @@ export const WrapperHeader = styled(Row)`
 `
 
 export const WrapperTextHeader = styled.span`
+    cursor: pointer;
     font-size: 18px;
     color: #fff;
     font-weight: bold;

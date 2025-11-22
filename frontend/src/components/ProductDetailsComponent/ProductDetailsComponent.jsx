@@ -12,7 +12,8 @@ import { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { addOrderProduct } from '../../redux/slides/orderSlide'
-
+import { convertPrice } from '../../utils'
+import ModalComponent from '../ModalComponent/ModalComponent'
 
 const ProductDetailsComponent = ({idProduct}) => {
     const[numProduct, setNumProduct] = useState(1)
@@ -51,7 +52,7 @@ const ProductDetailsComponent = ({idProduct}) => {
                     amount: numProduct,
                     image: productDetails?.image,
                     price: productDetails?.price,
-                    product: productDetails?.id
+                    product: productDetails?._id
                 }
             }))
         }
@@ -65,7 +66,7 @@ const ProductDetailsComponent = ({idProduct}) => {
     console.log('productDetails', productDetails)
 
     return (
-        // <Loading> 
+        <>
         <Row style={{ padding:'16px', background: '#fff', borderRadius: '4px' }}>
             <Col span={10} style={{ borderRight: '1px solid #e5e5e5', paddingRight: '8px' }}>
                 <Image src={productDetails?.image} alt="image product" preview={false}/>
@@ -97,7 +98,7 @@ const ProductDetailsComponent = ({idProduct}) => {
                     <WrapperStyleTextSell> | Da ban 1000+</WrapperStyleTextSell>
                 </div>
                 <WrapperPriceProduct>
-                    <WrapperPriceTextProduct>{productDetails?.price}</WrapperPriceTextProduct>
+                    <WrapperPriceTextProduct>{convertPrice(productDetails?.price)}</WrapperPriceTextProduct>
                 </WrapperPriceProduct>
                 <WrapperAddressProduct>
                     <span>Giao Đến</span>
@@ -146,7 +147,8 @@ const ProductDetailsComponent = ({idProduct}) => {
                 </div>
             </Col>
         </Row>
-        // </Loading>
+
+        </>
     )
 }
 

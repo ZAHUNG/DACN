@@ -3,7 +3,7 @@ import ProductDetailsComponent from '../../components/ProductDetailsComponent/Pr
 import { useNavigate, useParams } from 'react-router-dom'
 
 const ProductDetailsPage = () => {
-  const id = useParams()
+  const {id} = useParams()
   const navigate = useNavigate()
 
   return (

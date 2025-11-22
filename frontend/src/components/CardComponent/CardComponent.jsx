@@ -4,6 +4,7 @@ import { StyleNameProduct, WrapperPriceText, WrapperReportText, WrapperDiscountT
 import { StarFilled } from '@ant-design/icons'
 import logo from '../../assets/images/logo.png'
 import {useNavigate} from 'react-router-dom'
+import { convertPrice } from '../../utils'
 
 const CardComponent = (props) => {
     const navigate = useNavigate()
@@ -46,7 +47,7 @@ const CardComponent = (props) => {
 
             </WrapperReportText>
             <WrapperPriceText>
-                 <span style={{ marginRight: '8px' }}>{displayPrice}</span>
+                 <span style={{ marginRight: '8px' }}>{convertPrice(price)}</span>
                 <WrapperDiscountText>
                    - {discount || 5} %
                 </WrapperDiscountText>
