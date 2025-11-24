@@ -16,13 +16,14 @@ import * as OrderService from '../../services/OrderService';
 import Loading from '../../components/LoadingComponent/Loading';
 import * as message from '../../components/Message/Message';
 import { updateUser } from '../../redux/slides/userSlide';
+import { useNavigate } from 'react-router-dom';
 
 const PaymentPage = () => {
   const order = useSelector((state) => state.order);
   const user = useSelector((state) => state.user);
-  const [delivery, setDelivery] = useState('standard')
-  const orderItems = useSelector((state) => state.order);
-  const [payment, setPayment] = useState('COD')
+  const [delivery, setDelivery] = useState('fast')
+  const [payment, setPayment] = useState('later_money');
+  const navigate = useNavigate();
   const [listChecked, setListChecked] = useState([])
   const[isOpenModalUpdateInfo, setIsOpenModalUpdateInfo] = useState(false)
   const [stateUserDetails, setStateUserDetails] = useState({
@@ -148,12 +149,26 @@ const PaymentPage = () => {
   const {data: dataAdd, isLoading: isLoadingAddOrder, isSuccess, isError} = mutationAddOrder;
 
   useEffect(() => {
-    if ( isSuccess && dataAdd?.status === 'OK' ) {
+    if ( isSuccess && dataAdd?._id ) {
+      const arrayOrdered = [];
+      order?.orderItemsSelected?.forEach(element =>{
+        arrayOrdered.push(element.product)
+      })
+      dispatch(removeAllOrderProduct({listChecked: arrayOrdered}))
       message.success("Đặt hàng thành công!");
+      // console.log('dat hang thanh cong', dataAdd);
+      navigate('/orderSuccess',{
+        state: {
+          delivery,
+          payment,
+          orders: order?.orderItemsSelected,
+          totalPriceMemo: totalPriceMemo
+        }
+      });
     } else if ( isError){
       message.error("Đặt hàng thất bại!");
     }
-  },[isSuccess, isError]);
+  },[isSuccess, isError, dataAdd]);
 
 
   const handleCancleUpdate = () => {
@@ -208,8 +223,8 @@ const PaymentPage = () => {
                 <div>
                   <Lable>Chọn phương thức giao hàng</Lable>
                   <WrapperRadio onChange={handleDelivery} value={delivery}>
-                    <Radio value="fast"><span style={{color: '#ea8500', fontWeight: 'bold'}}>Fast</span></Radio>
-                    <Radio value="gojek"><span style={{color: '#ea8500', fontWeight: 'bold'}}>Gojek</span></Radio>
+                    <Radio value="fast"><span style={{color: '#ea8500', fontWeight: 'bold'}}>FAST</span> Giao hàng tiết kiệm</Radio>
+                    <Radio value="gojek"><span style={{color: '#ea8500', fontWeight: 'bold'}}>GO_JEK</span> Giao hàng tiết kiệm</Radio>
                   </WrapperRadio>
                 </div>
               </WrapperInfo>
