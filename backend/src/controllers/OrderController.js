@@ -22,6 +22,25 @@ const createOrder = async (req, res) => {
     }
 }
 
+const getDetailsOrder = async (req, res) => {
+    try {
+        const userId = req.params.id
+        if (!userId) {
+            return res.status(400).json({
+                status: 'ERR',
+                message: 'User ID is required'
+            })
+        }
+        const response = await OrderService.getOrderDetails(userId);
+        return res.status(200).json(response)
+    } catch (e) {
+        return res.status(500).json({
+            status: 'ERR',
+            message: e.message || 'Internal Server Error'
+        })
+    }
+}
 module.exports = {
     createOrder,
+    getDetailsOrder,
 }

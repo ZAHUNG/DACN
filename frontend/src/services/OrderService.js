@@ -10,3 +10,11 @@ export const createOrder = async (access_token, data) => {
         })  
     return res.data
 }
+export const getOrderbyUserId = async (id,access_token) => {
+    const res = await axiosJWT.get(`${process.env.REACT_APP_API_URL}/order/order-details/${id}`, {
+            headers: {
+                token: `Bearer ${access_token}`,
+            }    
+        })  
+    return res.data
+}

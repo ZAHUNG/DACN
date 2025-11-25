@@ -1,5 +1,4 @@
 const Order = require('../models/OrderProduct');
-const Product = require('../models/ProductModel');
 const bcrypt = require('bcrypt');
 const { genneralAccessToken, genneralRefreshToken } = require('./JwtService');
 
@@ -61,6 +60,30 @@ const createOrder = (newOrder) => {
     })
 }
 
+const getOrderDetails = (id) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const order = await Order.findOne({
+                user: id
+            })
+            if (!order) {
+                resolve({
+                    status: 'ERR',
+                    message: 'Order not found'
+                })
+            } else {
+                resolve({
+                    status: 'OK',
+                    message: 'SUCCESS',
+                    data: order
+                })
+            }
+        } catch (e) {
+            reject(e)
+        }
+    })
+}
 module.exports = {
     createOrder,
+    getOrderDetails
 }
