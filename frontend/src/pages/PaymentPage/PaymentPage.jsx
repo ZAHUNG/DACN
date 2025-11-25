@@ -149,7 +149,7 @@ const PaymentPage = () => {
   const {data: dataAdd, isLoading: isLoadingAddOrder, isSuccess, isError} = mutationAddOrder;
 
   useEffect(() => {
-    if ( isSuccess && dataAdd?._id ) {
+    if ( isSuccess && dataAdd?.status === 'Ok' ) {
       const arrayOrdered = [];
       order?.orderItemsSelected?.forEach(element =>{
         arrayOrdered.push(element.product)
