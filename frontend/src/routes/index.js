@@ -11,12 +11,19 @@ import AdminPage from '../pages/AdminPage/AdminPage';
 import PaymentPage from '../pages/PaymentPage/PaymentPage';
 import OrderSuccess from '../pages/OrderSuccess/OrderSuccess';
 import MyOrderPage from '../pages/MyOrderPage/MyOrderPage';
+import Help from '../pages/Help/Help';
 
 export const routes = [
     {
         path: '/',
         page: HomePage,
         isShowHeader: true
+    },
+    {
+        path: '/help',
+        page: Help,
+        isShowHeader: true,
+        isPrivate: false
     },
     {
         path: '/order',

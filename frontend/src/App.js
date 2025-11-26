@@ -4,13 +4,11 @@ import { routes } from './routes'
 import DefaultComponent from './components/DefaultComponent/DefaultComponent'
 import { isJsonString } from './utils'
 import axios from 'axios'
-// import { useQuery } from '@tanstack/react-query'
 import { jwtDecode } from 'jwt-decode';
 import * as UserService from './services/UserService'
 import { useDispatch, useSelector } from 'react-redux';
 import { updateUser } from './redux/slides/userSlide';
-import Loading from './components/LoadingComponent/Loading'
-
+import Help from './pages/Help/Help';
 
 
 function App() {
@@ -65,6 +63,7 @@ function App() {
     <div>
       {/* <Loading isLoading={isLoading}> */}
         <Router>
+          <Help />
           <Routes>
             {routes.map((route) => {
               const Page = route.page
