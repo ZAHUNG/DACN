@@ -84,8 +84,8 @@ const DetailsOrderPage = () => {
 
           {/* DANH SÁCH SẢN PHẨM */}
           <WrapperStyleContent>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 0', borderBottom: '1px solid #ddd' }}>
-              <div style={{ width:'500px', fontWeight: '600' }}>Sản phẩm</div>
+            <div style={{ display: 'flex', alignItems: 'center', padding: '10px 0', borderBottom: '1px solid #ddd' }}>
+              <WrapperProduct style={{ fontWeight: '600' }}>Sản phẩm</WrapperProduct>
               <WrapperItemLabel>Giá</WrapperItemLabel>
               <WrapperItemLabel>Số lượng</WrapperItemLabel>
               <WrapperItemLabel>Giảm giá</WrapperItemLabel>

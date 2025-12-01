@@ -49,17 +49,32 @@ export const WrapperItem = styled.div`
 export const WrapperProduct = styled.div`
   display: flex;
   align-items: center;
-  width: 40%;   /* chiếm 40% hàng */
+  flex: 1;   /* chiếm phần còn lại */
+  min-width: 0; /* cho phép text wrap nếu cần */
 `;
 
 export const WrapperItemLabel = styled.div`
-  width: 10%;  /* mỗi cột chiếm 10% */
+  width: 150px;  /* width cố định cho các cột */
   text-align: center;
   font-size: 14px;
+  flex-shrink: 0; /* không cho phép co lại */
 `;
 
 export const WrapperAllPrice = styled.div`
   display: flex;
-  flex-direction: column;
-  align-items: flex-end;
+  align-items: center;
+  padding: 15px 0;
+  border-top: 1px solid #eee;
+  margin-top: 10px;
+  
+  & > div:first-child {
+    flex: 1;
+    text-align: right;
+    width: auto;
+  }
+  
+  & > div:last-child {
+    width: 150px;
+    text-align: center;
+  }
 `
