@@ -95,15 +95,15 @@ useEffect(() => {
                 return (
                   <WrapperItemOrder key={order?.id}>
                   <WrapperStatus>
-                    <span style={{fontSize: '14px', fontWeight: 'bold'}}>Trạng thái</span>
-                    <div><span style={{color: 'rgb(255, 66, 78)'}}>Giao hàng</span>{`${order.isDelivered ? 'Đã giao hàng': 'Chưa giao hàng'}`}</div>
-                    <div><span style={{color: 'rgb(255, 66, 78)'}}>Giao hàng</span>{`${order.isPaid ? 'Đã thanh toans': 'Chưa thanh toán'}`}</div>
+                    <span style={{fontSize: '18px', fontWeight: 'bold'}}>Trạng thái</span>
+                    <div><span style={{color: 'rgb(255, 66, 78)', fontWeight: 'bold',fontSize:'15px'}}>Giao hàng: </span>{`${order.isDelivered ? 'Đã giao hàng': 'Chưa giao hàng'}`}</div>
+                    <div><span style={{color: 'rgb(255, 66, 78)', fontWeight: 'bold',fontSize:'15px'}}>Thanh toán: </span>{`${order.isPaid ? 'Đã thanh toán': 'Chưa thanh toán'}`}</div>
                   </WrapperStatus>
                   {renderProduct(order?.orderItems)}
                   <WrapperFooterItem>
                   <div>
-                    <span style={{ color:'rgb(255, 66, 78)'}}>Tổng tiền</span>
-                    <span style={{fontSize: '13px', color:'rgb(56, 56, 61)', fontWeight: 700}}>
+                    <span style={{ color:'rgb(255, 66, 78)', fontWeight: 'bold',fontSize:'16px'}}>Tổng tiền</span>
+                    <span style={{fontSize: '16px', color:'rgb(56, 56, 61)', fontWeight: 700}}>
                       {convertPrice(order?.totalPrice)}
                     </span>
                   </div>

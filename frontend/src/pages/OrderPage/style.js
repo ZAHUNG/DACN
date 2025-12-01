@@ -70,6 +70,7 @@ export const WrapperInfo = styled.div`
     background: #fff;    
     border-top-right-radius: 6px;
     border-top-left-radius: 6px;
+    font-size: 16px;
 `
 
 export const WrapperTotal = styled.div`
@@ -80,4 +81,5 @@ export const WrapperTotal = styled.div`
     background: #fff;    
     border-top-right-radius: 6px;
     border-top-left-radius: 6px;
+    font-size: 18px;
 `

@@ -65,10 +65,15 @@ const OrderPage = () => {
     }
   }
 
-
   useEffect(() => {
-    dispatch(selectedOrder({listChecked}))
-  }, [listChecked])
+      if(order?.orderItems?.length){
+        const defaultChecked = order.orderItems.map(item => item.product);
+        setListChecked(defaultChecked);
+      }
+      }, [order?.orderItems]);
+  useEffect(() => {
+      dispatch(selectedOrder({listChecked}))
+      }, [listChecked])
 
   useEffect(() => {
       if (stateUserDetails) {
@@ -264,11 +269,11 @@ const OrderPage = () => {
           <WrapperRight>
             <div style={{width: '100%'}}>
               <WrapperInfo>
-                <div>
-                  <span>Địa chỉ: </span>
+                <div style={{display: 'flex', flexDirection: 'column'}}>
+                  <span>Giao đến: </span>
                   <span style={{fontWeight: 'bold'}}>{`${user?.address} ${user?.city}`}</span>
-                  <span onClick={handleChangeAddress} style={{color: 'blue' , cursor:'pointer'}}>Thay đổi</span>
                 </div>
+                <span onClick={handleChangeAddress} style={{color: 'blue' , cursor:'pointer'}}>( Thay đổi địa chỉ ) </span>
               </WrapperInfo>
               <WrapperInfo>
                 <div style={{display: 'flex', alignItems:'center', justifyContent:'space-between'}}>
