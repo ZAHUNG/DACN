@@ -9,6 +9,8 @@ import Loading from '../../components/LoadingComponent/Loading'
 import Column from 'antd/es/table/Column'
 import { useSelector } from 'react-redux'
 import { useDebounce } from '../../Hook/useDebounceHook'
+import TypeProduct from '../../components/TypeProduct/TypeProduct'
+import { WrapperTypeProduct } from '../HomePage/style'
 
 
 const TypeProductPage = () => {
@@ -18,21 +20,36 @@ const TypeProductPage = () => {
   const {state} = useLocation()
   const [products, setProducts] = useState([])
   const [loading, setLoading] = useState(false)
+  const [typeProduct, setTypeProduct] = useState([])
   const [panigate, setPanigate] = useState({
       page:0,
       limit:10,
       total:1,
   })
+  
   const fetchProductType = async (type, page, limit) => {
     setLoading(true)
       const res = await  ProductService.getProductType(type, page, limit)
       if(res?.status == 'OK') {
         setProducts(res?.data)
         setPanigate({...panigate, total: res?.totalPage })
+        setLoading(false)
       }else {
           setLoading(false)
       }
   }
+  
+  const fetchAllTypeProduct = async () => {
+    const res = await ProductService.getAllTypeProduct()
+    if(res?.status === 'OK'){
+      setTypeProduct(res?.data)
+    }
+  }
+  
+  useEffect(() => {
+    fetchAllTypeProduct()
+  }, [])
+  
   useEffect(() => {
       if(state){
         fetchProductType(state, panigate.page, panigate.limit)
@@ -47,13 +64,22 @@ const TypeProductPage = () => {
     setPanigate({...panigate, page: current - 1, limit: pageSize})
   }
   return (
-    // <Loading isLoading={loading}>
-      <div style={{ width: ' 100%', background: '#efefef', height: 'calc(100vh - 64px' }} >
-        <div style={{ width: ' 1270px', margin: '0 auto', height: '100%' }}>
-            <Row style={{flexWrap: 'nowrap', paddingTop: '10px', height: '100%'}}>
-              <WrapperNavbar span={4} >
+    <Loading isLoading={loading}>
+      <div style={{ width: '1270px', margin: '0 auto' }}>
+        <WrapperTypeProduct>
+          {typeProduct.map((item) => {
+            return(
+              <TypeProduct name={item} key={item} />
+            )
+          })}
+        </WrapperTypeProduct>
+      </div>
+      <div style={{ width: ' 100%', background: '#efefef', minHeight: 'calc(100vh - 64px)' }} >
+        <div style={{ width: ' 1270px', margin: '0 auto', paddingBottom: '20px' }}>
+            <Row style={{flexWrap: 'nowrap', paddingTop: '10px'}}>
+              {/* <WrapperNavbar span={4} >
                   <NavBarComponent /> 
-              </WrapperNavbar>
+              </WrapperNavbar> */}
               <Col span={20} style={{display: 'flex', flexDirection: 'column', justifyContent:'space-between'}}>
                 <WrapperProducts>
                   {products?.filter((pro) => {
@@ -85,7 +111,7 @@ const TypeProductPage = () => {
             </Row>
         </div>
       </div>
-    // </Loading>
+    </Loading>
   )
 }
 

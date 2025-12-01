@@ -5,15 +5,33 @@ export const WrapperLeft = styled.div`
 `;
 
 export const WrapperStyleHeader = styled.div`
+    background: rgb(255, 255, 255);
+    padding: 9px 16px;
+    border-radius: 4px;
     display: flex;
     align-items: center;
-    background: #fff;
-    padding: 10px 20px;
-    font-weight: 500;
-    border-top-right-radius: 6px;
-    border-top-left-radius: 6px;
-    border-bottom: 1px solid #f5f5f5;
+    span{
+        color: rgb(36, 36, 36);
+        font-weight: 400;
+        font-size: 13px;
+    }
 `;
+
+export const WrapperStyleHeaderDelivery = styled.div`
+    background: rgb(255, 255, 255);
+    padding: 9px 16px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    span{
+        color: rgb(36, 36, 36);
+        font-weight: 400;
+        font-size: 13px;
+    }
+    margin-bottom: 14px;
+`
+
+
 
 export const WrapperListOrder = styled.div`
     background: #fff;

@@ -16,13 +16,16 @@ import * as OrderService from '../../services/OrderService';
 import Loading from '../../components/LoadingComponent/Loading';
 import * as message from '../../components/Message/Message';
 import { updateUser } from '../../redux/slides/userSlide';
+import { useNavigate } from 'react-router-dom';
+import PayPalButton from '../../components/PaypalButton/PaypalButton';
 
 const PaymentPage = () => {
   const order = useSelector((state) => state.order);
   const user = useSelector((state) => state.user);
-  const [delivery, setDelivery] = useState('standard')
-  const orderItems = useSelector((state) => state.order);
-  const [payment, setPayment] = useState('COD')
+  const [delivery, setDelivery] = useState('fast')
+  const [payment, setPayment] = useState('later_money');
+  const [showPayPalButton, setShowPayPalButton] = useState(false);
+  const navigate = useNavigate();
   const [listChecked, setListChecked] = useState([])
   const[isOpenModalUpdateInfo, setIsOpenModalUpdateInfo] = useState(false)
   const [stateUserDetails, setStateUserDetails] = useState({
@@ -89,6 +92,9 @@ const PaymentPage = () => {
 
   
   const handleAddOrder = () => {
+    if(payment === 'paypal') {
+      return; // PayPal Button sẽ xử lý
+    }
   const orderItems = order?.orderItemsSelected || [];
 
   // Validate đơn hàng
@@ -148,12 +154,26 @@ const PaymentPage = () => {
   const {data: dataAdd, isLoading: isLoadingAddOrder, isSuccess, isError} = mutationAddOrder;
 
   useEffect(() => {
-    if ( isSuccess && dataAdd?.status === 'OK' ) {
+    if ( isSuccess && dataAdd?.status === 'Ok' ) {
+      const arrayOrdered = [];
+      order?.orderItemsSelected?.forEach(element =>{
+        arrayOrdered.push(element.product)
+      })
+      dispatch(removeAllOrderProduct({listChecked: arrayOrdered}))
       message.success("Đặt hàng thành công!");
+      // console.log('dat hang thanh cong', dataAdd);
+      navigate('/orderSuccess',{
+        state: {
+          delivery,
+          payment,
+          orders: order?.orderItemsSelected,
+          totalPriceMemo: totalPriceMemo
+        }
+      });
     } else if ( isError){
       message.error("Đặt hàng thất bại!");
     }
-  },[isSuccess, isError]);
+  },[isSuccess, isError, dataAdd]);
 
 
   const handleCancleUpdate = () => {
@@ -194,8 +214,29 @@ const PaymentPage = () => {
   }
   const handlePayment = (e) => {
     setPayment(e.target.value)
+    if(e.target.value === 'paypal') {
+      setShowPayPalButton(true);
+    } else {
+      setShowPayPalButton(false);
+    }
   }
 
+  const handlePayPalSuccess = () => {
+  const arrayOrdered = [];
+  order?.orderItemsSelected?.forEach(element => {
+    arrayOrdered.push(element.product)
+  })
+  dispatch(removeAllOrderProduct({listChecked: arrayOrdered}))
+  message.success("Thanh toán PayPal thành công!");
+  navigate('/orderSuccess', {
+    state: {
+      delivery,
+      payment,
+      orders: order?.orderItemsSelected,
+      totalPriceMemo: totalPriceMemo
+    }
+  });
+  }
 
   return (
     <div style={{background:'#f5f5fa', width:'100%', height: '100vh'}}>
@@ -208,8 +249,8 @@ const PaymentPage = () => {
                 <div>
                   <Lable>Chọn phương thức giao hàng</Lable>
                   <WrapperRadio onChange={handleDelivery} value={delivery}>
-                    <Radio value="fast"><span style={{color: '#ea8500', fontWeight: 'bold'}}>Fast</span></Radio>
-                    <Radio value="gojek"><span style={{color: '#ea8500', fontWeight: 'bold'}}>Gojek</span></Radio>
+                    <Radio value="fast"><span style={{color: '#ea8500', fontWeight: 'bold'}}>FAST</span> Giao hàng tiết kiệm</Radio>
+                    <Radio value="gojek"><span style={{color: '#ea8500', fontWeight: 'bold'}}>GO_JEK</span> Giao hàng tiết kiệm</Radio>
                   </WrapperRadio>
                 </div>
               </WrapperInfo>
@@ -218,6 +259,7 @@ const PaymentPage = () => {
                   <Lable>Chọn phương thức thanh toán</Lable>
                   <WrapperRadio onChange={handlePayment} value={payment}>
                     <Radio value="later_money">Thanh toán khi nhận hàng</Radio>
+                    <Radio value="paypal">Paypal</Radio>
                   </WrapperRadio>
                 </div>
               </WrapperInfo>
@@ -253,19 +295,34 @@ const PaymentPage = () => {
                 </span>
               </WrapperTotal>
             </div>
-            <ButtonComponent 
-            onClick= {() => handleAddOrder()}
-            size={40}
-            styleButton={{
-              background: 'rgb(255, 57, 69)',
-              height: '48px',
-              width: '320px',
-              border: 'none',
-              borderRadius: '4px'
-            }}
-            textButton={'Đặt hàng'}
-            styleTextButton={{ color: '#fff', fontSize: '15px', fontWeight: '700' }}
-            ></ButtonComponent>
+                        {payment === 'paypal' ? (
+              <PayPalButton 
+                totalPrice={totalPriceMemo}
+                orderItems={order?.orderItemsSelected || []}
+                shippingAddress={{
+                  fullname: stateUserDetails.name || user?.name,
+                  address: stateUserDetails.address || user?.address,
+                  city: stateUserDetails.city || user?.city,
+                  phone: stateUserDetails.phone || user?.phone,
+                }}
+                onSuccess={handlePayPalSuccess}
+                user={user}
+              />
+            ) : (
+              <ButtonComponent 
+              onClick= {() => handleAddOrder()}
+              size={40}
+              styleButton={{
+                background: 'rgb(255, 57, 69)',
+                height: '48px',
+                width: '320px',
+                border: 'none',
+                borderRadius: '4px'
+              }}
+              textButton={'Đặt hàng'}
+              styleTextButton={{ color: '#fff', fontSize: '15px', fontWeight: '700' }}
+              ></ButtonComponent>
+            )}
           </WrapperRight>
         </div>
       </div>

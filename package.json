@@ -1,6 +1,7 @@
 {
   "dependencies": {
     "jwt-decode": "^4.0.0",
+    "react-paypal-button-v2": "^2.6.3",
     "redux-persist": "^6.0.0"
   }
 }

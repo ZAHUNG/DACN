@@ -7,7 +7,9 @@ export const WrapperCardStyle = styled(Card)`
         height: 200px;
         width: 100px;
     },
-    positionL relative
+    positionL relative;
+    background-color: ${props => props.disabled ? '#ccc' : '#fff'};
+    cursor: ${props => props.disabled ? 'not-allowed' : 'pointer'};
 `
 
 export const StyleNameProduct = styled.div`

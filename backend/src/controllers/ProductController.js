@@ -134,5 +134,5 @@ module.exports = {
     deleteProduct,
     getAllProduct,
     deleteMany,
-    getAllType,
+    getAllType
 }

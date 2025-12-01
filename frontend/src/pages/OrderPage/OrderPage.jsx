@@ -3,13 +3,14 @@ import { Checkbox, Form } from 'antd';
 import React, { useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { WrapperInputNumber } from '../../components/ProductDetailsComponent/style';
-import { WrapperTotal,WrapperLeft,WrapperStyleHeader, WrapperListOrder,WrapperItemOrder, WrapperCountOrder, WrapperRight, WrapperInfo  } from './style';
+import { WrapperTotal,WrapperLeft,WrapperStyleHeader, WrapperListOrder,WrapperItemOrder, WrapperCountOrder, WrapperRight, WrapperInfo, WrapperStyleHeaderDelivery  } from './style';
 import ButtonComponent from '../../components/ButtonComponent/ButtonComponent';
 import { decreaseAmount, increaseAmount, removeAllOrderProduct, removeOrderProduct, selectedOrder } from '../../redux/slides/orderSlide';
 import { convertPrice } from '../../utils';
 import { useEffect } from 'react';
 import ModalComponent from '../../components/ModalComponent/ModalComponent';
 import InputComponent from '../../components/InputComponent/InputComponent';
+import Step from '../../components/StepComponent/StepComponent';
 import { useMutationHooks } from '../../Hook/useMutationHook';
 import * as UserService from '../../services/UserService';
 import Loading from '../../components/LoadingComponent/Loading';
@@ -109,9 +110,9 @@ const OrderPage = () => {
   }, [order])
 
   const deliveryPriceMemo = useMemo(() => {
-    if(priceMemo > 200000){
+    if(priceMemo >= 200000 && priceMemo < 500000 || order?.orderItemsSelected?.length === 0){
       return 10000;
-    }else if(priceMemo === 0){
+    }else if(priceMemo >= 500000){
       return 0;
     }else{
       return 20000;
@@ -182,7 +183,24 @@ const OrderPage = () => {
             [e.target.name]: e.target.value
         })
     }
-  console.log('stateUserDetails', stateUserDetails);
+  // console.log('stateUserDetails', stateUserDetails);
+
+    const itemsDelivery = [
+      {
+        title: '20000 VND',
+        description: 'Dưới 200.000 VND',
+      },
+      {
+        title: '10.000 VND',
+        description:'Từ 200.000 VND đến dưới 500.000 VND',
+        subTitle: 'Left 00:00:08'
+      },
+      {
+        title: '0 VND',
+        description:'Trên 500.000 VND',
+      }
+    ]
+
 
   return (
     <div style={{background:'#f5f5fa', width:'100%', height: '100vh'}}>
@@ -190,6 +208,11 @@ const OrderPage = () => {
         <h3>Giỏ hàng</h3>
         <div style={{display: 'flex', justifyContent: 'center'}}>
           <WrapperLeft>
+            <WrapperStyleHeaderDelivery>
+              <Step items={itemsDelivery} current={deliveryPriceMemo === 10000 
+                ? 2 : deliveryPriceMemo === 20000 ? 1 
+                : order.orderItemsSelected === 0 ? 0 : 3}/>
+            </WrapperStyleHeaderDelivery>
             <WrapperStyleHeader>
               <span style={{display: 'inline-block', width: '390px'}}>
                 <Checkbox onChange={handleOnchangeCheckAll} checked={listChecked?.length === order?.orderItems?.length} ></Checkbox>

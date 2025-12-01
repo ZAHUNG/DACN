@@ -26,27 +26,21 @@ const authMiddlewear = (req, res, next) => {
 }
 
 const authUserMiddlewear = (req, res, next) => {
-    // console.log('checkToken', req.headers.token)
-    const token = req.headers.token.split(' ')[1]
-    const userId = req.params.id
+    const token = req.headers.token?.split(' ')[1];
+    if (!token) {
+        return res.status(401).json({ message: 'No token', status: 'ERROR' });
+    }
+
     jwt.verify(token, process.env.ACCESS_TOKEN, function(err, user) {
         if (err) {
-            return res.status(404).json({
-                message: 'The authentication',
-                status: 'ERROR'
-            })
+            return res.status(403).json({ message: 'Invalid token', status: 'ERROR' });
         }
-        console.log('user', user)
-        if (user.isAdmin || user?.id === userId) {
-            next();
-        } else {
-            return res.status(404).json({
-                message: 'The authentication',
-                status: 'ERROR'
-            })
-        }
+
+        // Bỏ check isAdmin → cả user và admin đều đi tiếp
+        req.user = user; // lưu thông tin vào req để Controller dùng
+        next();
     });
-}
+};
 
 module.exports = {
     authMiddlewear,

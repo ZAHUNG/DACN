@@ -71,11 +71,27 @@ export const orderSlide = createSlice({
         state.orderItemsSelected = orderSelected 
         console.log('selected', state, action)
     },
+    resetOrder: (state) => {
+      state.orderItems = [];
+      state.orderItemsSelected = [];
+      state.shippingAddress = {};
+      state.paymentMethod = '';
+      state.itemsPrice = 0;
+      state.shippingPrice = 0;
+      state.taxPrice = 0;
+      state.totalPrice = 0;
+      state.user = '';
+      state.isPaid = false;
+      state.paidAt = '';
+      state.isDelivered = false;
+      state.deliveredAt = '';
+    },
 } ,
 })
 
 
+
 // Action creators are generated for each case reducer function
-export const { addOrderProduct, increaseAmount, decreaseAmount, removeOrderProduct, removeAllOrderProduct, selectedOrder } = orderSlide.actions
+export const { addOrderProduct, increaseAmount, decreaseAmount, removeOrderProduct, removeAllOrderProduct, selectedOrder, resetOrder } = orderSlide.actions
 
 export default orderSlide.reducer

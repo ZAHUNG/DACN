@@ -2,6 +2,11 @@
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+Tải thư viện react : npm install
+Tải thư viện để xuất file excel : npm install xlsx file-saver
+Tải thư viện socket : npm install socket.io-client
+Tải thư viện googleAI : npm install @google/generative-ai
+
 ## Available Scripts
 
 In the project directory, you can run:
