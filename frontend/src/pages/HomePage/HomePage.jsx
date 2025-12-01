@@ -17,7 +17,7 @@ import { useDebounce } from '../../Hook/useDebounceHook'
 
 const HomePage = () => {
   const searchProduct = useSelector((state) => state?.product?.search)
-  const searchDebounce = useDebounce(searchProduct,500)
+  const searchDebounce = useDebounce(searchProduct,1000)
   const [loading, setLoading] = useState (false)
   const [limit, setLimit] = useState (6)
 
@@ -87,16 +87,7 @@ const HomePage = () => {
                 />
               )
             })}
-            {/* <CardComponent />
-            <CardComponent />
-            <CardComponent />
-            <CardComponent />
-            <CardComponent />
-            <CardComponent />
-            <CardComponent />
-            <CardComponent />
-            <CardComponent />
-            <CardComponent /> */}
+            
           </WrapperProducts>
           <div style={{ width: '100%', display: 'flex', justifyContent: 'center', marginTop: '10px' }}>
             <WrapperButtonMore
