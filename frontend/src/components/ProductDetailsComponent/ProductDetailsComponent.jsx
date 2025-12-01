@@ -1,19 +1,15 @@
 import { Col, Row, Image, InputNumber, Rate } from 'antd'
-import React from 'react'
-import imageProduct from '../../assets/images/test.webp'
 import imageProductSmall from '../../assets/images/imagesmall.webp'
 import { WrapperStyleColImage, WrapperStyleImageSmall, WrapperStyleNameProduct, WrapperStyleTextSell, WrapperPriceProduct, WrapperPriceTextProduct, WrapperAddressProduct, WrapperQualitytProduct, WrapperInputNumber, onChange } from './style'
 import { PlusOutlined, StarFilled, MinusOutlined } from '@ant-design/icons'
 import ButtonComponent from '../ButtonComponent/ButtonComponent'
 import * as ProductService from '../../services/ProductService'
 import { useQuery } from '@tanstack/react-query'
-import Loading from '../LoadingComponent/Loading'
 import { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { addOrderProduct } from '../../redux/slides/orderSlide'
 import { convertPrice } from '../../utils'
-import ModalComponent from '../ModalComponent/ModalComponent'
 
 const ProductDetailsComponent = ({idProduct}) => {
     const[numProduct, setNumProduct] = useState(1)
@@ -92,34 +88,42 @@ const ProductDetailsComponent = ({idProduct}) => {
                 </Row>
             </Col>
             <Col span={14} style={{ paddingLeft: '10px' }}>
-                <WrapperStyleNameProduct >{productDetails?.name}</WrapperStyleNameProduct>
+            <WrapperStyleNameProduct>{productDetails?.name}</WrapperStyleNameProduct>
                 <div>
-                    <Rate allowHalf defaultValue={productDetails?.Rating} value = {productDetails?.rating} />
-                    <WrapperStyleTextSell> | Da ban 1000+</WrapperStyleTextSell>
+                    <Rate allowHalf defaultValue={productDetails?.rating} value={productDetails?.rating} />
+                    <WrapperStyleTextSell> | Đã bán {productDetails?.selled || 0}</WrapperStyleTextSell>
                 </div>
+
                 <WrapperPriceProduct>
-                    <WrapperPriceTextProduct>{convertPrice(productDetails?.price)}</WrapperPriceTextProduct>
+                    <WrapperPriceTextProduct>
+                        {productDetails?.discount
+                            ? convertPrice(productDetails.price - productDetails.price * (productDetails.discount / 100))
+                            : convertPrice(productDetails?.price)}
+                    </WrapperPriceTextProduct>
                 </WrapperPriceProduct>
-                <WrapperAddressProduct>
-                    <span>Giao Đến</span>
-                    <span className='address'>{user?.address}</span> -
-                    <span className='change-address' >Đổi địa chỉ</span>
-                </WrapperAddressProduct>
+
+                <div style={{ margin: '10px 0', padding: '10px 0', borderTop: '1px solid #e5e5e5', borderBottom: '1px solid #e5e5e5' }}>
+                    <div>Loại sản phẩm: {productDetails?.type}</div>
+                    <div>Tồn kho: {productDetails?.countInStock}</div>
+                    {productDetails?.description && <div>Mô tả: {productDetails.description}</div>}
+                    {productDetails?.discount && <div>Giảm giá: {productDetails.discount}%</div>}
+                </div>
+
                 <div style={{ margin: '10px 0 20px', padding: '10px 0', borderTop: '1px solid #e5e5e5', borderBottom: '1px solid #e5e5e5' }}>
-                    <div style= {{marginBottom: '10px'}}>Số Lượng</div>
+                    <div style={{ marginBottom: '10px' }}>Số lượng</div>
                     <WrapperQualitytProduct>
-                        <button style={{ border: 'none', background:'transparent', cursor:'pointer'}} onClick= {() => handleChangeCount('decrease')}>
-                            <MinusOutlined style={{ color:'#000', fontSize: '20px'}} />
+                        <button style={{ border: 'none', background: 'transparent', cursor: 'pointer' }} onClick={() => handleChangeCount('decrease')}>
+                            <MinusOutlined style={{ color: '#000', fontSize: '20px' }} />
                         </button>
-                        <WrapperInputNumber defaultValue={1} onChange={onChange} value ={numProduct} size="small" />
-                        <button style={{ border: 'none', background: 'transparent' , cursor:'pointer'}}  onClick= {() => handleChangeCount('increase')}>
+                        <WrapperInputNumber defaultValue={1} onChange={onChange} value={numProduct} size="small" />
+                        <button style={{ border: 'none', background: 'transparent', cursor: 'pointer' }} onClick={() => handleChangeCount('increase')}>
                             <PlusOutlined style={{ color: '#000', fontSize: '20px' }} />
                         </button>
                     </WrapperQualitytProduct>
                 </div>
-                <div style={{ display: 'flex', aliggItems: 'center', gap: '12px'}}>
+
+                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                     <ButtonComponent
-                       
                         size={40}
                         styleButton={{
                             background: 'rgb(255, 57, 69)',
@@ -127,11 +131,11 @@ const ProductDetailsComponent = ({idProduct}) => {
                             width: '220px',
                             bordered: 'none',
                             borderedRadius: '4px'
-                        }} 
+                        }}
                         onClick={handleAddOrderProduct}
                         textButton={'Chọn mua'}
                         styleTextButton={{ color: '#fff', fontSize: '15px', fontWeight: '700' }}
-                    ></ButtonComponent>
+                    />
                     <ButtonComponent
                         size={40}
                         styleButton={{
@@ -142,8 +146,8 @@ const ProductDetailsComponent = ({idProduct}) => {
                             borderedRadius: '4px'
                         }}
                         textButton={'Mua trả sau'}
-                        styleTextButton={{ color: 'rgb(13, 92, 182)', fontSize: '15px'}}
-                    ></ButtonComponent>
+                        styleTextButton={{ color: 'rgb(13, 92, 182)', fontSize: '15px' }}
+                    />
                 </div>
             </Col>
         </Row>

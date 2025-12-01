@@ -187,23 +187,11 @@ const getDetailsUser = (id) => {
 const refreshTokenService = (token) => {
     return new Promise(async (resolve, reject) => {
         try {
-            // const user = await User.findOne({
-            //     _id: id
-            // })
-            // // console.log('checkUser', checkUser)
-            // if(user === null){
-            //     resolve({
-            //         status: 'ERR',
-            //         message: 'The user is not defined'
-            //     })
-            // }
-            // // console.log('updateUser', updateUser)
             console.log('token', token)
             resolve({
                 status: 'OK',
                 message: 'SUCCESS',
             })
-            // }
         } catch (e) {
             reject(e)
         }
@@ -216,5 +204,6 @@ module.exports = {
     updateUser,
     deleteUser,
     getAllUser,
-    getDetailsUser
+    getDetailsUser,
+    refreshTokenService
 }
