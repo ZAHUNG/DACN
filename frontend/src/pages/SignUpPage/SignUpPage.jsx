@@ -41,13 +41,22 @@ const SignUpPage = () => {
   const { data, isLoading, isSuccess, isError } = mutation
 
   useEffect(() => {
-    if (isSuccess) {
-      message.success();
-      handleNavigateSignIn()
-    } else if (isError) {
-      message.error()
+  if (isSuccess && data) {
+
+    if (data?.status === 'ERR') {
+      message.error(data?.message || "Đăng ký thất bại")
+      return
     }
-  })
+
+    // Thành công
+    message.success("Đăng ký thành công")
+    navigate('/sign-in')
+  }
+
+  if (isError) {
+    message.error("Lỗi kết nối server")
+  }
+}, [isSuccess, isError, data])
 
   const handleNavigateSignIn = () =>{
     navigate('/sign-in')
