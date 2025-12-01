@@ -15,9 +15,9 @@ function App() {
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] =useState(false)
   const user = useSelector((state) => state.user)
+  const isUserAdmin = user?.isAdmin || false;
 
   useEffect(() => {
-    // setIsLoading(true)
     const { storageData, decoded} = handleDecoded()
     if(decoded?.id) {
       handleGetDetailsUser(decoded?.id, storageData)
@@ -27,7 +27,6 @@ function App() {
   const handleDecoded =() => {
     let storageData = localStorage.getItem('access_token')
     let decoded = {}
-    //console.log('storageData:', storageData, isJsonString(storageData));
     if (storageData && isJsonString(storageData)){
       storageData = JSON.parse(storageData)
       decoded = jwtDecode(storageData)
@@ -37,9 +36,7 @@ function App() {
 
   UserService.axiosJWT.interceptors.request.use(async (config) => {
     const storageData = localStorage.getItem('access_token')
-      // Nếu logout → không refresh token
       if (!storageData) return config
-      // Do something before request is sent
     const currentTime = new Date()
     const {decoded} = handleDecoded()
     if ( decoded?.exp < currentTime.getTime() / 1000) {
@@ -48,28 +45,24 @@ function App() {
     }
     return config;
   }, function (error) {
-    // Do something with request error
     return Promise.reject(error);
   })
 
   const handleGetDetailsUser = async (id, token) => {
     const res = await UserService.getDetailsUser(id, token)
     dispatch(updateUser({...res?.data, access_token: token}))
-    // setIsLoading(false)
-    // console.log('res', res)
   }
 
   return (
     <div>
-      {/* <Loading isLoading={isLoading}> */}
         <Router>
-          <Help />
+          {isUserAdmin ? null : <Help isAdmin={false} />}
           <Routes>
+            
             {routes.map((route) => {
               const Page = route.page
-              const Layout = route.isShowHeader ? DefaultComponent : Fragment // If isShowHeader is true, use DefaultComponent, otherwise use Fragment
+              const Layout = route.isShowHeader ? DefaultComponent : Fragment 
               const ischeckAuth = !route.isPrivate || user.isAdmin
-              // ✅ Chỉ render route khi được phép
               if (!ischeckAuth) return null
 
               return (
@@ -82,7 +75,6 @@ function App() {
             })}
           </Routes>
         </Router>
-      {/* </Loading> */}
     </div>
   )
 }
