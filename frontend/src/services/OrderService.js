@@ -36,3 +36,18 @@ export const cancelOrder = async (id,access_token) => {
         })  
     return res.data
 }
+export const createPayPalOrder = (token, data) => {
+  return axiosJWT.post(`${process.env.REACT_APP_API_URL}/paypal/create-order`, data, {
+    headers: {
+      token: `Bearer ${token}`,
+    }
+  })
+}
+
+export const capturePayPalOrder = (token, data) => {
+  return axiosJWT.post(`${process.env.REACT_APP_API_URL}/paypal/capture-order`, data, {
+    headers: {
+      token: `Bearer ${token}`,
+    }
+  })
+}
