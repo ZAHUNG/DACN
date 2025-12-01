@@ -34,23 +34,32 @@ const SignInPage = () => {
   const { data, isLoading, isSuccess} = mutation
 
   useEffect(() => {
-    if (isSuccess) {
-      if(location?.state){
-        navigate(location?.state)
-      }else{
-        navigate('/')
+  if (isSuccess) {
+    if (data?.status === 'ERR') {
+      message.error(data?.message || 'Đăng nhập thất bại')
+      return
+    }
+
+    // Thành công
+    message.success("Đăng nhập thành công")
+
+    localStorage.setItem('access_token', JSON.stringify(data?.access_token))
+
+    if (data?.access_token) {
+      const decoded = jwtDecode(data?.access_token)
+      if (decoded?.id) {
+        handleGetDetailsUser(decoded?.id, data?.access_token)
       }
-      message.success();  
-      localStorage.setItem('access_token', JSON.stringify(data?.access_token))
-      if (data?.access_token) {
-        const decoded = jwtDecode(data?.access_token)
-        // console.log('decode', decoded);
-        if(decoded?.id) {
-          handleGetDetailsUser(decoded?.id, data?.access_token)
-        }
-      }
-    } 
-  }, [isSuccess])
+    }
+
+    if (location?.state) {
+      navigate(location?.state)
+    } else {
+      navigate('/')
+    }
+  }
+}, [isSuccess])
+
 
   const handleGetDetailsUser = async (id, token) => {
     const res = await UserService.getDetailsUser(id, token)
