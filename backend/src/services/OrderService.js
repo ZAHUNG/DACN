@@ -107,8 +107,31 @@ const getDetailsOrder = (id) => {
     })
 }
 
+const cancelOrderDetails = (id) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const order = await Order.findByIdAndDelete(id)
+            if (!order) {
+                resolve({
+                    status: 'ERR',
+                    message: 'Order not found'
+                })
+            } else {
+                resolve({
+                    status: 'OK',
+                    message: 'SUCCESS',
+                    data: order
+                })
+            }
+        } catch (e) {
+            reject(e)
+        }
+    })
+}
+
 module.exports = {
     createOrder,
     getAllOrderDetails,
-    getDetailsOrder
+    getDetailsOrder,
+    cancelOrderDetails
 }

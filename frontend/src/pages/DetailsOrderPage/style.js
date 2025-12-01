@@ -57,3 +57,9 @@ export const WrapperItemLabel = styled.div`
   text-align: center;
   font-size: 14px;
 `;
+
+export const WrapperAllPrice = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+`

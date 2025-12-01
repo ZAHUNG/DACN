@@ -71,8 +71,28 @@ const getDetailsOrder = async (req, res) => {
     }
 }
 
+const cancelOrderDetails = async (req, res) => {
+    try {
+        const orderId = req.params.id
+        if (!orderId) {
+            return res.status(400).json({
+                status: 'ERR',
+                message: 'User ID is required'
+            })
+        }
+        const response = await OrderService.cancelOrderDetails(orderId);
+        return res.status(200).json(response)
+    } catch (e) {
+        return res.status(500).json({
+            status: 'ERR',
+            message: e.message || 'Internal Server Error'
+        })
+    }
+}    
+
 module.exports = {
     createOrder,
     getAllOrderDetails,
-    getDetailsOrder
+    getDetailsOrder,
+    cancelOrderDetails
 }

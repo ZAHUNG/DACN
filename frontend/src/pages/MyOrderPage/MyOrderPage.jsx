@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react'
+import React, { useMemo, useState, useEffect } from 'react'
 import { useQuery } from '@tanstack/react-query';
 import * as OrderService from '../../services/OrderService'
 import Loading from '../../components/LoadingComponent/Loading';
@@ -7,6 +7,8 @@ import { convertPrice } from '../../utils';
 import { WrapperContainer, WrapperHeaderItem, WrapperListOrder, WrapperItemOrder, WrapperStatus, WrapperFooterItem} from './style';
 import ButtonComponent from '../../components/ButtonComponent/ButtonComponent'
 import { useLocation, useNavigate } from 'react-router-dom'
+import { useMutationHooks } from '../../Hook/useMutationHook'
+import * as message from '../../components/Message/Message'
 
 const MyOrderPage = () => {
   const location = useLocation();
@@ -21,6 +23,7 @@ const MyOrderPage = () => {
     enabled: Boolean(state?.id && state?.token)
   })
   const { isLoading, data } = queryOrder
+  // console.log('data', data)
 
   const handleDetailsOrder = (id) => {
     navigate(`/details-order/${id}`,{
@@ -30,6 +33,33 @@ const MyOrderPage = () => {
     })
   }
   
+  const mutation = useMutationHooks(
+  (data) => {
+    const { id, token } = data
+    const res = OrderService.cancelOrder(id, token)
+    return res
+  }
+)
+
+const handleCancelOrder = (id) => {
+  mutation.mutate({ id, token: state?.token }, {
+    onSuccess: () => {
+      queryOrder.refetch()
+    }
+  })
+}
+
+const { isLoading: isLoadingCancel, isSuccess: isSuccessCancel, isError: isErrorCancel, data: dataCancel } = mutation
+
+useEffect(() => {
+  if (isSuccessCancel && dataCancel?.status === 'OK') {
+    message.success()
+  } else if (isErrorCancel) {
+    message.error()
+  }
+}, [isErrorCancel, isSuccessCancel])
+
+
   const renderProduct = (data) => {
     return data?.map((order) => {
       return <WrapperHeaderItem>
@@ -79,7 +109,7 @@ const MyOrderPage = () => {
                   </div>
                    <div style={{display: 'flex', gap: '10px'}}>
                       <ButtonComponent
-                        // onClick={() => handleAddCard()}
+                        onClick={() => handleCancelOrder(order?._id)}
                         size={40}
                         styleButton={{
                           height: '36px',
