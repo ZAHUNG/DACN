@@ -88,6 +88,18 @@ const FooterComponent = () => {
                 <EnvironmentOutlined style={{ marginRight: '8px', color: '#fff' }} />
                 18 Cộng Hòa, Quận Tân Bình, TP.HCM
               </FooterText>
+              <div style={{ marginTop: '12px', borderRadius: '6px', overflow: 'hidden' }}>
+                <iframe
+                  title="Store Location"
+                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3919.337878715983!2d106.63628791533411!3d10.790488261714963!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3175299bafc33a35%3A0x3c6c1ff8d1f4b5d!2s18%20Cong%20Hoa%2C%20Tan%20Binh%2C%20Ho%20Chi%20Minh%2C%20Vietnam!5e0!3m2!1sen!2s!4v1700000000000!5m2!1sen!2s"
+                  width="100%"
+                  height="150"
+                  style={{ border: 0 }}
+                  allowFullScreen=""
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                ></iframe>
+              </div>
             </FooterSection>
           </Col>
         </Row>
