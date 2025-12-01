@@ -33,7 +33,7 @@ const AdminProduct = () => {
     const user = useSelector((state) => state?.user)
     const [typeSelect, setTypeSelect] = useState('')
 
-    const [stateProduct, setStateProduct] = useState({
+    const inittial= () => ({
         name: '',
         type:'',
         countInStock: '',
@@ -44,16 +44,9 @@ const AdminProduct = () => {
         newType:'',
         discount:''
     })
-    const [stateProductDetails, setStateProductDetails] = useState({
-        name: '',
-        type:'',
-        countInStock: '',
-        price: '',
-        description: '',
-        rating: '',
-        image: '',
-        discount:''
-    })
+
+    const [stateProduct, setStateProduct] = useState(inittial())
+    const [stateProductDetails, setStateProductDetails] = useState(inittial())
 
     const [form] = Form.useForm();
 
@@ -115,10 +108,16 @@ const AdminProduct = () => {
     }
 
     useEffect(() => {
+
     if (stateProductDetails) {
-        form.setFieldsValue(stateProductDetails)
+        if(!isModalOpen){       
+        form.setFieldsValue(stateProductDetails);
+        }else{
+        form.setFieldsValue(inittial());
+        }
     }
-    }, [stateProductDetails, form])
+    }, [stateProductDetails, form, isModalOpen])
+    // console.log('state',stateProductDetails, stateProduct)
 
     useEffect(() => {
         if(rowSelected){

@@ -14,7 +14,7 @@ import { WrapperContentPopup } from './style';
 import * as UserService from '../../services/UserService';
 import { resetUser } from '../../redux/slides/userSlide';
 import { searchProduct } from '../../redux/slides/productSlide';
-
+import { resetOrder } from '../../redux/slides/orderSlide';
 
 const HeaderComponent = ({ isHiddenSearch = false, isHiddenCart = false }) => {
   const navigate = useNavigate(); 
@@ -34,7 +34,8 @@ const HeaderComponent = ({ isHiddenSearch = false, isHiddenCart = false }) => {
   setLoading(true)
   await UserService.logoutUser()          // Xoá cookie refresh_token trên BE
   localStorage.removeItem('access_token') // Xoá token FE
-  dispatch(resetUser())                   // Reset Redux user
+  dispatch(resetUser())   
+  dispatch(resetOrder());                 // Reset Redux user
   setLoading(false)
   window.location.reload()                // Reload để reset UI hoàn toàn
   }
@@ -63,7 +64,11 @@ const HeaderComponent = ({ isHiddenSearch = false, isHiddenCart = false }) => {
     } else if(type === 'admin'){
       navigate('/system/admin')
     } else if(type === 'my-order'){
-      navigate('/my-order')
+      navigate('/my-order',{state:{
+          id: user?.id,
+          token: user?.access_token
+      }
+      })
     } else{
       handleLogout()
     }

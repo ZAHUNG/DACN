@@ -7,7 +7,7 @@ const ButtonInputSearch = (props) => {
     const {
         size, placeholder, textButton, 
         bordered, backgroundColorInput = "#fff", 
-        backgroundColorButton= 'rgb(13, 92, 182)',
+        backgroundColorButton= 'rgba(13, 41, 182, 1)',
         colorButton= "#fff"
     } = props
 
