@@ -192,7 +192,6 @@ const refreshTokenService = (token) => {
                 status: 'OK',
                 message: 'SUCCESS',
             })
-            // }
         } catch (e) {
             reject(e)
         }
@@ -205,5 +204,6 @@ module.exports = {
     updateUser,
     deleteUser,
     getAllUser,
-    getDetailsUser
+    getDetailsUser,
+    refreshTokenService
 }
