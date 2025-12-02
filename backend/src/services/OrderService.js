@@ -110,24 +110,44 @@ const getDetailsOrder = (id) => {
 const cancelOrderDetails = (id) => {
     return new Promise(async (resolve, reject) => {
         try {
-            const order = await Order.findByIdAndDelete(id)
+            // 1. Lấy thông tin đơn hàng
+            const order = await Order.findById(id);
             if (!order) {
-                resolve({
+                return resolve({
                     status: 'ERR',
                     message: 'Order not found'
-                })
-            } else {
-                resolve({
-                    status: 'OK',
-                    message: 'SUCCESS',
-                    data: order
-                })
+                });
             }
+
+            // 2. Hoàn lại số lượng sản phẩm
+            const updatePromises = order.orderItems.map(async (item) => {
+                await Product.findByIdAndUpdate(
+                    item.product,
+                    {
+                        $inc: {
+                            countInStock: +item.amount,   // Hoàn kho
+                            selled: -item.amount           // Giảm số lượng đã bán
+                        }
+                    }
+                )
+            });
+
+            await Promise.all(updatePromises);
+
+            // 3. Xóa đơn hàng
+            await Order.findByIdAndDelete(id);
+
+            resolve({
+                status: 'OK',
+                message: 'Order canceled and restored product count successfully'
+            });
+
         } catch (e) {
-            reject(e)
+            reject(e);
         }
     })
 }
+
 
 module.exports = {
     createOrder,
